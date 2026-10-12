@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Afterlight 2099</title>
+<style>
+  :root {
+    --bg-dark: #1a0d05;
+    --wood-plank: #45240c;
+    --wood-dark: #2b1406;
+    --stone-face: #8c857b;
+    --stone-rim: #3d372f;
+    --stone-dark: #5a544c;
+    --stone-light: #bfb7aa;
+    --amber-orange: #d97724;
+    --bright-orange: #f59e0b;
+    --deep-orange: #9a4306;
+    --energy-green: #2ecc71;
+    --durability-green: #27ae60;
+    --cream-text: #fff3e0;
+  }
+
+  * {
+    box-sizing: border-box;
+    user-select: none;
+    -webkit-user-select: none;
+    margin: 0;
+    padding: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Trebuchet MS", "Segoe UI", Roboto, sans-serif;
+  }
+
+  body {
+    background-color: var(--bg-dark);
+    background-image: radial-gradient(#381c0b 15%, #120702 85%);
+    color: var(--cream-text);
+    display: block;
+    min-height: 100vh;
+    padding: 12px 0 30px 0;
+  }
+
+  /* Main wrapper has explicit width and auto height to guarantee full visibility */
+  #game-app {
+    width: 95%;
+    max-width: 440px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #5c3214 0%, #44230b 45%, #2a1506 100%);
+    border: 3px solid #291204;
+    border-radius: 14px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.9);
+    padding: 10px;
+    position: relative;
+  }
+
+  /* 1. TOP 5 STONE BUTTONS */
+  .top-action-bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .stone-btn {
+    height: 52px;
+    background: linear-gradient(180deg, #b0a99c 0%, #827b70 60%, #5d574d 100%);
+    border: 2px solid #3d3830;
+    border-radius: 8px;
+    box-shadow: inset 1px 1px 0 #ded9cf, 0 3px 0 #2b2721, 0 4px 5px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.05s ease;
+  }
+  .stone-btn:active {
+    transform: translateY(2px);
+    box-shadow: inset 1px 1px 0 #ded9cf, 0 1px 0 #2b2721;
+  }
+  .stone-btn .btn-icon {
+    font-size: 20px;
+    line-height: 1.1;
+  }
+  .stone-btn .btn-text {
+    font-size: 8.5px;
+    font-weight: 900;
+    color: #24201a;
+    letter-spacing: -0.3px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  /* 2. CHARACTER TRIO SECTION */
+  .character-trio-stage {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    background: rgba(0, 0, 0, 0.25);
+    border: 2px solid #3d210b;
+    border-radius: 12px;
+    padding: 10px 6px 12px 6px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .character-pod {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%;
+    position: relative;
+  }
+
+  .char-portrait {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: #6e411e;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+    cursor: pointer;
+    border: 3px solid #361f0f;
+    transition: transform 0.1s;
+  }
+  .char-portrait:active {
+    transform: scale(0.95);
+  }
+  .char-portrait.protag { border-color: var(--bright-orange); }
+  .char-portrait.npc { border-color: #8c8275; }
+  .char-portrait.minion { border-color: var(--amber-orange); }
+
+  .char-label {
+    font-size: 9.5px;
+    font-weight: 800;
+    margin-top: 3px;
+    text-shadow: 1px 1px 2px #000;
+    color: var(--cream-text);
+  }
+
+  /* Energy Bars */
+  .energy-pill {
+    width: 100%;
+    height: 16px;
+    background: #170d05;
+    border: 2px solid #573315;
+    border-radius: 8px;
+    margin-top: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .energy-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #27ae60, #2ecc71);
+    width: 100%;
+    transition: width 0.25s ease;
+  }
+  .energy-val {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9.5px;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px #000;
+  }
+
+  /* NPC Speech Bubble */
+  .quest-bubble {
+    position: absolute;
+    top: -24px;
+    background: #fff8eb;
+    border: 2px solid #573315;
+    border-radius: 12px;
+    padding: 2px 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 900;
+    color: #4b280e;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.6);
+    cursor: pointer;
+    animation: bounce 2s infinite ease-in-out;
+    white-space: nowrap;
+    z-index: 10;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+  }
+
+  /* 3. UPPER DEDICATED CONTAINER DRAWER */
+  .upper-container-drawer {
+    display: none;
+    margin-bottom: 12px;
+    background: linear-gradient(180deg, #7c4c23 0%, #523013 100%);
+    border: 3px solid var(--amber-orange);
+    border-radius: 10px;
+    padding: 8px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.7), 0 4px 12px rgba(0,0,0,0.6);
+  }
+  .drawer-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 900;
+    margin-bottom: 6px;
+    padding: 0 2px;
+    color: var(--cream-text);
+  }
+  .drawer-close {
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 900;
+    color: var(--bright-orange);
+    background: #331c0a;
+    border: 1px solid var(--amber-orange);
+    border-radius: 4px;
+    padding: 2px 6px;
+  }
+  .drawer-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+
+  /* 4. 3+1 CRAFTING STONE BENCH */
+  .crafting-slab {
+    background: linear-gradient(180deg, #999184 0%, #7d7568 50%, #5a5347 100%);
+    border: 3px solid #363127;
+    border-radius: 10px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+    box-shadow: inset 1px 1px 0 #bcb6aa, 0 4px 8px rgba(0,0,0,0.6);
+  }
+
+  .craft-slot {
+    width: 54px;
+    height: 54px;
+    min-width: 54px;
+    background: #39342b;
+    border: 2px solid #231f19;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+  }
+  .craft-slot.tool-target {
+    border-color: var(--amber-orange);
+    background: #47321e;
+  }
+  .craft-slot.occupied {
+    background: #544b3e;
+    border-color: var(--bright-orange);
+  }
+  .slot-label-text {
+    position: absolute;
+    top: 2px;
+    font-size: 7.5px;
+    color: #9f978a;
+    font-weight: 900;
+  }
+
+  .craft-btn-rock {
+    flex: 1;
+    height: 54px;
+    background: linear-gradient(180deg, #f59e0b 0%, #d97724 55%, #9b4105 100%);
+    border: 2px solid #542203;
+    border-radius: 8px;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px #000;
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: inset 1px 1px 0 #fbd38d, 0 3px 0 #3d1902;
+    transition: transform 0.05s ease, opacity 0.15s ease;
+  }
+  .craft-btn-rock:active {
+    transform: translateY(2px);
+    box-shadow: inset 1px 1px 0 #fbd38d, 0 1px 0 #3d1902;
+  }
+  .craft-btn-rock.disabled {
+    background: linear-gradient(180deg, #746d62 0%, #575147 100%);
+    border-color: #38332c;
+    box-shadow: none;
+    color: #9d968b;
+    text-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.65;
+  }
+
+  /* 5. MAIN INVENTORY TRAY (5x4 Grid = 20 Slots) */
+  .inventory-wrapper {
+    background: linear-gradient(180deg, #6c411c 0%, #47280f 100%);
+    border: 3px solid #301a08;
+    border-radius: 10px;
+    padding: 8px;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.7);
+  }
+
+  .inventory-tray {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(4, 64px);
+    gap: 6px;
+  }
+
+  /* Universal Slot Styling */
+  .inv-tile {
+    height: 64px;
+    min-height: 64px;
+    background: linear-gradient(180deg, #aba294 0%, #898072 50%, #686154 100%);
+    border: 2px solid #3d372e;
+    border-radius: 7px;
+    box-shadow: inset 1px 1px 0 #c7c0b3, 0 2px 3px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.05s ease;
+  }
+  .inv-tile:active {
+    transform: scale(0.96);
+  }
+  .inv-tile.container-tile {
+    border: 2px solid var(--bright-orange);
+    background: linear-gradient(180deg, #c77b3b 0%, #8f4813 100%);
+  }
+
+  .tile-icon {
+    font-size: 26px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.6));
+  }
+  .tile-qty {
+    position: absolute;
+    top: 2px;
+    right: 4px;
+    font-size: 11px;
+    font-weight: 900;
+    color: #ffffff;
+    text-shadow: 1px 1px 2px #000;
+  }
+  .tile-durability-wrap {
+    position: absolute;
+    bottom: 2px;
+    left: 4px;
+    right: 4px;
+    height: 4px;
+    background: #252019;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .tile-durability-bar {
+    height: 100%;
+    background: var(--durability-green);
+  }
+  .tile-durability-num {
+    position: absolute;
+    bottom: 6px;
+    left: 4px;
+    font-size: 9px;
+    font-weight: 900;
+    color: #70ff8b;
+    text-shadow: 1px 1px 1px #000;
+  }
+
+  /* Modals */
+  .modal-scrim {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 8, 3, 0.90);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    padding: 14px;
+    border-radius: 12px;
+  }
+  .modal-dialog {
+    width: 100%;
+    background: linear-gradient(180deg, #998f80 0%, #766d60 100%);
+    border: 4px solid #363127;
+    border-radius: 12px;
+    box-shadow: inset 1px 1px 0 #c2bbaF, 0 8px 24px rgba(0,0,0,0.85);
+    padding: 12px;
+    color: #2b251d;
+  }
+  .modal-headline {
+    font-size: 14px;
+    font-weight: 900;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #50483c;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .modal-close-cross {
+    cursor: pointer;
+    font-size: 16px;
+    color: #943204;
+    font-weight: 900;
+    padding: 2px 6px;
+  }
+  .modal-body-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 270px;
+    overflow-y: auto;
+  }
+  .modal-item-row {
+    background: #463f33;
+    color: #ffffff;
+    padding: 8px 10px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px #000;
+  }
+
+  /* Toast Notification */
+  .game-toast {
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(18, 10, 4, 0.95);
+    border: 1px solid var(--bright-orange);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 900;
+    display: none;
+    z-index: 200;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+
+<div id="game-app">
+
+  <!-- 1. Top 5 Action Buttons Row -->
+  <div class="top-action-bar">
+    <div class="stone-btn" onclick="openModal('modal-protag-skills')">
+      <span class="btn-icon">🧠</span>
+      <span class="btn-text">SKILLS</span>
+    </div>
+    <div class="stone-btn" onclick="openModal('modal-protag-bag')">
+      <span class="btn-icon">🎒</span>
+      <span class="btn-text">P-BAG</span>
+    </div>
+    <div class="stone-btn" onclick="openModal('modal-city')">
+      <span class="btn-icon">🏛️</span>
+      <span class="btn-text">CITY</span>
+    </div>
+    <div class="stone-btn" onclick="openModal('modal-minion-skills')">
+      <span class="btn-icon">⚙️</span>
+      <span class="btn-text">M-SKILL</span>
+    </div>
+    <div class="stone-btn" onclick="openModal('modal-minion-bag')">
+      <span class="btn-icon">💼</span>
+      <span class="btn-text">M-BAG</span>
+    </div>
+  </div>
+
+  <!-- 2. Character Trio Area -->
+  <div class="character-trio-stage">
+    <!-- Protagonist -->
+    <div class="character-pod">
+      <div class="char-portrait protag" onclick="consumeFood('player')">🧑‍🚀</div>
+      <div class="energy-pill">
+        <div class="energy-fill" id="protag-energy-fill"></div>
+        <div class="energy-val" id="protag-energy-txt">114 / 114</div>
+      </div>
+      <div class="char-label">OPERATIVE</div>
+    </div>
+
+    <!-- Master Crafter NPC Archon AI -->
+    <div class="character-pod">
+      <div class="quest-bubble" onclick="openQuestDialog()">
+        <span>📜</span><span id="quest-bubble-txt">QUEST 1</span>
+      </div>
+      <div class="char-portrait npc" onclick="openQuestDialog()">🧙‍♂️</div>
+      <div class="char-label" style="color:#d5cdc2;">ARCHON AI</div>
+    </div>
+
+    <!-- Worker Drone Minion -->
+    <div class="character-pod">
+      <div class="char-portrait minion" onclick="scavengeMinion()">🛸</div>
+      <div class="energy-pill">
+        <div class="energy-fill" id="minion-energy-fill"></div>
+        <div class="energy-val" id="minion-energy-txt">137 / 137</div>
+      </div>
+      <div class="char-label" style="color:var(--bright-orange);">DRONE</div>
+    </div>
+  </div>
+
+  <!-- 3. Dedicated Popup Container Drawer (Upper Area) -->
+  <div class="upper-container-drawer" id="upper-container-drawer">
+    <div class="drawer-head">
+      <span id="drawer-name-title">CONTAINER (8 SLOTS)</span>
+      <span class="drawer-close" onclick="closeContainerDrawer()">✕ CLOSE</span>
+    </div>
+    <div class="drawer-grid" id="drawer-slot-grid"></div>
+  </div>
+
+  <!-- 4. Crafting 3+1 Stone Slab Bench -->
+  <div class="crafting-slab">
+    <div class="craft-slot" id="craft-in-0" onclick="removeFromBench(0)">
+      <span class="slot-label-text">IN 1</span>
+    </div>
+    <div class="craft-slot" id="craft-in-1" onclick="removeFromBench(1)">
+      <span class="slot-label-text">IN 2</span>
+    </div>
+    <div class="craft-slot" id="craft-in-2" onclick="removeFromBench(2)">
+      <span class="slot-label-text">IN 3</span>
+    </div>
+    <div class="craft-slot tool-target" id="craft-tool" onclick="removeToolFromBench()">
+      <span class="slot-label-text" style="color:var(--bright-orange);">TOOL</span>
+    </div>
+    <div class="craft-btn-rock disabled" id="craft-btn" onclick="executeCraftAction()">Craft</div>
+  </div>
+
+  <!-- 5. Lower Condensed Home Inventory (5 Columns x 4 Rows = 20 Slots) -->
+  <div class="inventory-wrapper">
+    <div class="inventory-tray" id="main-inventory-tray"></div>
+  </div>
+
+  <!-- Toast Notification Box -->
+  <div class="game-toast" id="game-toast"></div>
+
+  <!-- MODAL: Protagonist Skills -->
+  <div class="modal-scrim" id="modal-protag-skills">
+    <div class="modal-dialog">
+      <div class="modal-headline">
+        <span>PROTAGONIST SKILLS</span>
+        <span class="modal-close-cross" onclick="closeModal('modal-protag-skills')">✕</span>
+      </div>
+      <div class="modal-body-list" id="protag-skills-container"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: Protagonist Bag -->
+  <div class="modal-scrim" id="modal-protag-bag">
+    <div class="modal-dialog">
+      <div class="modal-headline">
+        <span>PLAYER BAG (EQUIPMENT)</span>
+        <span class="modal-close-cross" onclick="closeModal('modal-protag-bag')">✕</span>
+      </div>
+      <div class="modal-body-list">
+        <div style="font-size:10px; color:#faecd8; font-weight:bold;">FIELD EQUIPMENT (CRAFTED):</div>
+        <div class="modal-item-row"><span>Head Slot</span><span>[ Hazard Filter Visor ]</span></div>
+        <div class="modal-item-row"><span>Chest Slot</span><span>[ Insulated Undersuit ]</span></div>
+        <div class="modal-item-row"><span>Legs Slot</span><span>[ Exoskeleton Braces ]</span></div>
+        <div class="modal-item-row"><span>Feet Slot</span><span>[ Magnetic Grip Boots ]</span></div>
+        <div style="font-size:10px; color:#faecd8; font-weight:bold; margin-top:4px;">GP PRESTIGE CYBERWARE:</div>
+        <div class="modal-item-row"><span>Apron Slot</span><span style="color:var(--bright-orange);">+400% GP Boost</span></div>
+        <div class="modal-item-row"><span>Skill Book</span><span style="color:var(--bright-orange);">+0.2 Neural Archive</span></div>
+        <div class="modal-item-row"><span>Glove Slot</span><span style="color:#70ff8b;">+30.0 Cyber-Gloves</span></div>
+        <div class="modal-item-row"><span>Weapon Slot</span><span>[ Arc Lance Mk-I ]</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Colony City -->
+  <div class="modal-scrim" id="modal-city">
+    <div class="modal-dialog">
+      <div class="modal-headline">
+        <span>SECTOR BASTION (CITY)</span>
+        <span class="modal-close-cross" onclick="closeModal('modal-city')">✕</span>
+      </div>
+      <div class="modal-body-list">
+        <div class="modal-item-row"><span>Recombination Pod (Love Hut)</span><span style="color:var(--bright-orange);">Ready for Reset</span></div>
+        <div class="modal-item-row"><span>Modular Habitats</span><span>Pop: 3 / 6 Operatives</span></div>
+        <div class="modal-item-row"><span>Agro-Hydroponic Dome</span><span>Generating Berries (Auto)</span></div>
+        <div class="modal-item-row"><span>Polymer Extrusion Rig</span><span>Generating Struts (Auto)</span></div>
+        <div class="modal-item-row"><span>Orbital Trade Depot</span><span>Shiny Cores &rarr; GP Exchange</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Minion Skills -->
+  <div class="modal-scrim" id="modal-minion-skills">
+    <div class="modal-dialog">
+      <div class="modal-headline">
+        <span>MINION DRONE SUBSYSTEMS</span>
+        <span class="modal-close-cross" onclick="closeModal('modal-minion-skills')">✕</span>
+      </div>
+      <div class="modal-body-list">
+        <div class="modal-item-row"><span>Surface Scavenging</span><span id="m-skill-scav">55.2</span></div>
+        <div class="modal-item-row"><span>Core Salvage (Lumber)</span><span id="m-skill-lumb">29.6</span></div>
+        <div class="modal-item-row"><span>Bio-Extraction (Hunt)</span><span id="m-skill-hunt">20.7</span></div>
+        <div class="modal-item-row"><span>Aquatic Harvesting</span><span id="m-skill-fish">4.6</span></div>
+        <div class="modal-item-row"><span>Neural Sync (Comm)</span><span id="m-skill-comm">58.8</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Minion Bag -->
+  <div class="modal-scrim" id="modal-minion-bag">
+    <div class="modal-dialog">
+      <div class="modal-headline">
+        <span>MINION CHASSIS DIRECTIVE</span>
+        <span class="modal-close-cross" onclick="closeModal('modal-minion-bag')">✕</span>
+      </div>
+      <div class="modal-body-list">
+        <div class="modal-item-row"><span>Gather Type Slot</span><span id="minion-gather-target-desc" style="color:var(--bright-orange);">[ ANY FIELD SCRAP ]</span></div>
+        <div class="modal-item-row"><span>Chassis Power</span><span>Power: 2</span></div>
+        <div class="modal-item-row"><span>Neck Core</span><span>[ Chitin Reinforcement ]</span></div>
+        <div class="modal-item-row"><span>Body Shielding</span><span>[ Solar Leaf Shroud ]</span></div>
+        <div class="modal-item-row"><span>Auxiliary Pods</span><span>[ 2x Expansion Bays ]</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
+<script>
+// --- CORE GAME STATE ---
+const GAME = {
+  protagEnergy: 114,
+  maxProtagEnergy: 114,
+  minionEnergy: 137,
+  maxMinionEnergy: 137,
+  questStep: 0,
+
+  skills: {
+    mealPrep: 37.2,
+    toolCraft: 23.6,
+    woodWork: 25.9,
+    skinning: 11.2,
+    cooking: 22.3,
+    tailoring: 1.1,
+    pottery: 6.7
+  },
+  minionSkills: {
+    scavenging: 55.2,
+    lumber: 29.6,
+    hunting: 20.7,
+    fishing: 4.6,
+    communication: 58.8
+  },
+
+  // 20 Home Inventory Slots (5 cols x 4 rows)
+  inventory: new Array(20).fill(null),
+  benchInputs: [null, null, null],
+  benchTool: null,
+  activeMatchedRecipe: null,
+  activeContainerIndex: null
+};
+
+// --- QUEST PROGRESSION LIST ---
+const QUEST_LOG = [
+  {
+    title: "QUEST 1",
+    task: "Peel 1x Banana Pod to verify bio-synthesis calibration.",
+    target: "Peeled Banana",
+    type: "craft"
+  },
+  {
+    title: "QUEST 2",
+    task: "Forge 1x Mono-Shard using Raw Mineral + Heavy Slag.",
+    target: "Mono-Shard",
+    type: "craft"
+  },
+  {
+    title: "QUEST 3",
+    task: "Prepare Diced Banana Wafers using Peeled Banana + Mono-Shard.",
+    target: "Banana Wafers",
+    type: "craft"
+  },
+  {
+    title: "QUEST 4",
+    task: "Tap the Worker Drone to complete 3 scavenging sorties.",
+    target: 3,
+    type: "scavenge",
+    progress: 0
+  },
+  {
+    title: "QUEST 5",
+    task: "Assemble 1x Field Container using Nano-Strips + Polymer Tendon.",
+    target: "Field Container",
+    type: "craft"
+  }
+];
+
+// --- 3+1 RECIPES CATALOG ---
+const RECIPES = [
+  {
+    name: "Peeled Banana",
+    inputs: ["Banana Pod"],
+    tool: null,
+    skillKey: "mealPrep",
+    result: { id: "peeled_banana", name: "Peeled Banana", icon: "🍌", isFood: true, energy: 20, qty: 1 }
+  },
+  {
+    name: "Mono-Shard",
+    inputs: ["Raw Mineral"],
+    tool: "Heavy Slag",
+    skillKey: "toolCraft",
+    result: { id: "mono_shard", name: "Mono-Shard", icon: "🗡️", isTool: true, maxDp: 35, dp: 35, qty: 1 }
+  },
+  {
+    name: "Banana Wafers",
+    inputs: ["Peeled Banana"],
+    tool: "Mono-Shard",
+    skillKey: "mealPrep",
+    result: { id: "banana_wafers", name: "Banana Wafers", icon: "🥞", isFood: true, energy: 35, qty: 1 }
+  },
+  {
+    name: "Pneu-Hatchet",
+    inputs: ["Carbon Strut", "Mono-Shard", "Polymer Tendon"],
+    tool: null,
+    skillKey: "toolCraft",
+    result: { id: "hatchet", name: "Pneu-Hatchet", icon: "🪓", isTool: true, maxDp: 110, dp: 110, qty: 1 }
+  },
+  {
+    name: "Field Container",
+    inputs: ["Nano-Grid Strips", "Polymer Tendon"],
+    tool: null,
+    skillKey: "woodWork",
+    result: { id: "nanite_pod", name: "Field Container", icon: "📦", isContainer: true, capacity: 8, storage: new Array(8).fill(null), qty: 1 }
+  }
+];
+
+// --- POPULATING STARTING INVENTORY (20 SLOTS) ---
+GAME.inventory[0] = { id: "cont_1", name: "Grandma's Conta", icon: "📦", isContainer: true, capacity: 8, storage: new Array(8).fill(null), qty: 1 };
+GAME.inventory[1] = { id: "raw_mineral", name: "Raw Mineral", icon: "🪨", qty: 22 };
+GAME.inventory[2] = { id: "heavy_slag", name: "Heavy Slag", icon: "⚙️", isTool: true, maxDp: 15, dp: 5, qty: 1 };
+GAME.inventory[3] = { id: "banana_pod", name: "Banana Pod", icon: "🍌", qty: 14 };
+GAME.inventory[4] = { id: "carbon_strut", name: "Carbon Strut", icon: "🥢", qty: 32 };
+GAME.inventory[5] = { id: "polymer_tendon", name: "Polymer Tendon", icon: "➰", qty: 17 };
+GAME.inventory[6] = { id: "nano_strips", name: "Nano-Grid Strips", icon: "📜", qty: 20 };
+GAME.inventory[7] = { id: "berries", name: "Azure Berry", icon: "🫐", isFood: true, energy: 10, qty: 34 };
+GAME.inventory[8] = { id: "chitin_bone", name: "Hard Chitin", icon: "🦴", qty: 9 };
+GAME.inventory[9] = { id: "log", name: "Composite Log", icon: "🪵", qty: 14 };
+
+// Seed items inside Grandma's Container
+GAME.inventory[0].storage[0] = { id: "sub_berry", name: "Crimson Berry", icon: "🍓", isFood: true, energy: 12, qty: 15 };
+GAME.inventory[0].storage[1] = { id: "sub_stick", name: "Strut Fragment", icon: "🪵", qty: 8 };
+
+// --- RENDERING INVENTORY GRID ---
+function renderMainInventory() {
+  const tray = document.getElementById("main-inventory-tray");
+  if (!tray) return;
+  tray.innerHTML = "";
+
+  for (let i = 0; i < 20; i++) {
+    const item = GAME.inventory[i];
+    const tile = document.createElement("div");
+    tile.className = "inv-tile" + (item && item.isContainer ? " container-tile" : "");
+    tile.onclick = () => onInventoryClick(i);
+
+    if (item) {
+      tile.innerHTML = `<span class="tile-icon">${item.icon}</span>`;
+      if (item.isTool) {
+        const pct = Math.max(0, Math.min(100, (item.dp / item.maxDp) * 100));
+        tile.innerHTML += `
+          <div class="tile-durability-wrap"><div class="tile-durability-bar" style="width:${pct}%"></div></div>
+          <span class="tile-durability-num">${item.dp}</span>
+        `;
+      } else {
+        tile.innerHTML += `<span class="tile-qty">${item.qty}</span>`;
+      }
+    }
+    tray.appendChild(tile);
+  }
+  updateGauges();
+  verifyRecipeMatch();
+}
+
+// --- INVENTORY CLICK DISPATCHER ---
+function onInventoryClick(index) {
+  const item = GAME.inventory[index];
+  if (!item) return;
+
+  // 1. Containers expand into the dedicated upper drawer
+  if (item.isContainer) {
+    openContainerDrawer(index);
+    return;
+  }
+
+  // 2. Tools populate the tool slot if vacant
+  if (item.isTool && !GAME.benchTool) {
+    GAME.benchTool = { ...item };
+    GAME.inventory[index] = null;
+    renderBench();
+    renderMainInventory();
+    return;
+  }
+
+  // 3. Standard items load into inputs 1, 2, or 3
+  for (let i = 0; i < 3; i++) {
+    if (!GAME.benchInputs[i]) {
+      GAME.benchInputs[i] = { ...item, qty: 1 };
+      if (item.qty > 1) {
+        item.qty -= 1;
+      } else {
+        GAME.inventory[index] = null;
+      }
+      renderBench();
+      renderMainInventory();
+      return;
+    }
+  }
+}
+
+// --- BENCH RENDERING & SLOT DISCHARGE ---
+function renderBench() {
+  for (let i = 0; i < 3; i++) {
+    const slotEl = document.getElementById(`craft-in-${i}`);
+    const item = GAME.benchInputs[i];
+    slotEl.innerHTML = `<span class="slot-label-text">IN ${i+1}</span>`;
+    if (item) {
+      slotEl.classList.add("occupied");
+      slotEl.innerHTML += `<span class="tile-icon">${item.icon}</span><span class="tile-qty">${item.qty}</span>`;
+    } else {
+      slotEl.classList.remove("occupied");
+    }
+  }
+
+  const toolEl = document.getElementById("craft-tool");
+  toolEl.innerHTML = `<span class="slot-label-text" style="color:var(--bright-orange);">TOOL</span>`;
+  if (GAME.benchTool) {
+    toolEl.classList.add("occupied");
+    toolEl.innerHTML += `<span class="tile-icon">${GAME.benchTool.icon}</span><span class="tile-qty">${GAME.benchTool.dp}</span>`;
+  } else {
+    toolEl.classList.remove("occupied");
+  }
+}
+
+function removeFromBench(idx) {
+  const item = GAME.benchInputs[idx];
+  if (!item) return;
+  pushToMainInventory(item);
+  GAME.benchInputs[idx] = null;
+  renderBench();
+  renderMainInventory();
+}
+
+function removeToolFromBench() {
+  if (!GAME.benchTool) return;
+  pushToMainInventory(GAME.benchTool);
+  GAME.benchTool = null;
+  renderBench();
+  renderMainInventory();
+}
+
+function pushToMainInventory(item) {
+  if (!item.isTool && !item.isContainer) {
+    for (let i = 0; i < 20; i++) {
+      if (GAME.inventory[i] && GAME.inventory[i].name === item.name && GAME.inventory[i].qty < 100) {
+        const canAdd = Math.min(item.qty, 100 - GAME.inventory[i].qty);
+        GAME.inventory[i].qty += canAdd;
+        item.qty -= canAdd;
+        if (item.qty <= 0) return true;
+      }
+    }
+  }
+  for (let i = 0; i < 20; i++) {
+    if (!GAME.inventory[i]) {
+      GAME.inventory[i] = item;
+      return true;
+    }
+  }
+  displayToast("Cargo full! No free slots.");
+  return false;
+}
+
+// --- RECIPE VERIFICATION & CRAFTING ---
+function verifyRecipeMatch() {
+  const btn = document.getElementById("craft-btn");
+  if (!btn) return;
+  const inNames = GAME.benchInputs.filter(x => x !== null).map(x => x.name).sort();
+  const toolName = GAME.benchTool ? GAME.benchTool.name : null;
+
+  const match = RECIPES.find(r => {
+    const rInputs = [...r.inputs].sort();
+    return JSON.stringify(inNames) === JSON.stringify(rInputs) && r.tool === toolName;
+  });
+
+  if (match) {
+    GAME.activeMatchedRecipe = match;
+    btn.classList.remove("disabled");
+  } else {
+    GAME.activeMatchedRecipe = null;
+    btn.classList.add("disabled");
+  }
+}
+
+function executeCraftAction() {
+  if (!GAME.activeMatchedRecipe) return;
+  const recipe = GAME.activeMatchedRecipe;
+
+  if (GAME.protagEnergy < 2) {
+    displayToast("Energy low! Consume food rations.");
+    return;
+  }
+
+  GAME.protagEnergy -= 2;
+  GAME.benchInputs = [null, null, null];
+
+  if (GAME.benchTool) {
+    GAME.benchTool.dp -= 1;
+    if (GAME.benchTool.dp <= 0) {
+      displayToast(`${GAME.benchTool.name} shattered!`);
+      GAME.benchTool = null;
+    }
+  }
+
+  pushToMainInventory({ ...recipe.result });
+  GAME.skills[recipe.skillKey] = +(GAME.skills[recipe.skillKey] + 0.1).toFixed(1);
+  displayToast(`Crafted: ${recipe.result.name}! (+0.1 Skill)`);
+
+  checkQuestStep("craft", recipe.result.name);
+
+  renderBench();
+  renderMainInventory();
+}
+
+// --- CONTAINER POPUP IN UPPER AREA ---
+function openContainerDrawer(index) {
+  GAME.activeContainerIndex = index;
+  const cont = GAME.inventory[index];
+  document.getElementById("drawer-name-title").innerText = `${cont.name.toUpperCase()} (EXTRA SLOTS)`;
+  const grid = document.getElementById("drawer-slot-grid");
+  grid.innerHTML = "";
+
+  for (let i = 0; i < cont.capacity; i++) {
+    const item = cont.storage[i];
+    const tile = document.createElement("div");
+    tile.className = "inv-tile";
+    tile.style.height = "52px";
+    tile.onclick = () => extractFromDrawer(i);
+    if (item) {
+      tile.innerHTML = `<span class="tile-icon" style="font-size:22px;">${item.icon}</span><span class="tile-qty">${item.qty}</span>`;
+    }
+    grid.appendChild(tile);
+  }
+  document.getElementById("upper-container-drawer").style.display = "block";
+}
+
+function closeContainerDrawer() {
+  document.getElementById("upper-container-drawer").style.display = "none";
+  GAME.activeContainerIndex = null;
+}
+
+function extractFromDrawer(slotIdx) {
+  if (GAME.activeContainerIndex === null) return;
+  const cont = GAME.inventory[GAME.activeContainerIndex];
+  const item = cont.storage[slotIdx];
+  if (!item) return;
+
+  if (pushToMainInventory(item)) {
+    cont.storage[slotIdx] = null;
+    openContainerDrawer(GAME.activeContainerIndex);
+    renderMainInventory();
+  }
+}
+
+// --- MINION HARVESTING & SUSTENANCE ---
+function scavengeMinion() {
+  if (GAME.minionEnergy < 2) {
+    displayToast("Drone energy depleted! Feed food.");
+    return;
+  }
+  GAME.minionEnergy -= 2;
+
+  const pool = [
+    { id: "raw_mineral", name: "Raw Mineral", icon: "🪨", qty: 1 },
+    { id: "banana_pod", name: "Banana Pod", icon: "🍌", qty: 1 },
+    { id: "carbon_strut", name: "Carbon Strut", icon: "🥢", qty: 1 },
+    { id: "polymer_tendon", name: "Polymer Tendon", icon: "➰", qty: 1 }
+  ];
+  const randomHarvest = pool[Math.floor(Math.random() * pool.length)];
+  pushToMainInventory(randomHarvest);
+
+  GAME.minionSkills.scavenging = +(GAME.minionSkills.scavenging + 0.1).toFixed(1);
+  GAME.minionSkills.communication = +(GAME.minionSkills.communication + 0.1).toFixed(1);
+  displayToast(`Drone scavenged: ${randomHarvest.name}!`);
+
+  checkQuestStep("scavenge", 1);
+  renderMainInventory();
+}
+
+function consumeFood(target) {
+  for (let i = 0; i < 20; i++) {
+    const item = GAME.inventory[i];
+    if (item && item.isFood) {
+      if (target === "player") {
+        GAME.protagEnergy = Math.min(GAME.maxProtagEnergy, GAME.protagEnergy + item.energy);
+        displayToast(`Operative fed +${item.energy} EN!`);
+      } else {
+        GAME.minionEnergy = Math.min(GAME.maxMinionEnergy, GAME.minionEnergy + item.energy);
+        displayToast(`Minion Drone fed +${item.energy} EN!`);
+      }
+      item.qty -= 1;
+      if (item.qty <= 0) GAME.inventory[i] = null;
+      renderMainInventory();
+      return;
+    }
+  }
+  displayToast("No food items available in cargo!");
+}
+
+// --- QUEST TRACKING ---
+function checkQuestStep(type, arg) {
+  if (GAME.questStep >= QUEST_LOG.length) return;
+  const q = QUEST_LOG[GAME.questStep];
+  if (q.type === type) {
+    if (type === "craft" && q.target === arg) {
+      advanceQuest();
+    } else if (type === "scavenge") {
+      q.progress = (q.progress || 0) + 1;
+      if (q.progress >= q.target) {
+        advanceQuest();
+      }
+    }
+  }
+}
+
+function advanceQuest() {
+  displayToast(`Directive Cleared: ${QUEST_LOG[GAME.questStep].title}!`);
+  GAME.questStep++;
+  refreshQuestBubble();
+}
+
+function refreshQuestBubble() {
+  const lbl = document.getElementById("quest-bubble-txt");
+  if (!lbl) return;
+  if (GAME.questStep < QUEST_LOG.length) {
+    lbl.innerText = QUEST_LOG[GAME.questStep].title;
+  } else {
+    lbl.innerText = "DONE";
+  }
+}
+
+function openQuestDialog() {
+  if (GAME.questStep < QUEST_LOG.length) {
+    const q = QUEST_LOG[GAME.questStep];
+    alert(`[ARCHON AI DIRECTIVE]\n${q.title}: ${q.task}`);
+  } else {
+    alert("[ARCHON AI]\nAll directives cleared! Colony Citadel awaiting Recombination Pod reset.");
+  }
+}
+
+function displayToast(msg) {
+  const el = document.getElementById("game-toast");
+  if (!el) return;
+  el.innerText = msg;
+  el.style.display = "block";
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => { el.style.display = "none"; }, 1900);
+}
+
+function updateGauges() {
+  const pPct = (GAME.protagEnergy / GAME.maxProtagEnergy) * 100;
+  document.getElementById("protag-energy-fill").style.width = `${pPct}%`;
+  document.getElementById("protag-energy-txt").innerText = `${GAME.protagEnergy} / ${GAME.maxProtagEnergy}`;
+
+  const mPct = (GAME.minionEnergy / GAME.maxMinionEnergy) * 100;
+  document.getElementById("minion-energy-fill").style.width = `${mPct}%`;
+  document.getElementById("minion-energy-txt").innerText = `${GAME.minionEnergy} / ${GAME.maxMinionEnergy}`;
+
+  const elScav = document.getElementById("m-skill-scav");
+  const elComm = document.getElementById("m-skill-comm");
+  if (elScav) elScav.innerText = GAME.minionSkills.scavenging.toFixed(1);
+  if (elComm) elComm.innerText = GAME.minionSkills.communication.toFixed(1);
+}
+
+// --- MODAL CONTROLS ---
+function openModal(id) {
+  if (id === 'modal-protag-skills') {
+    const c = document.getElementById("protag-skills-container");
+    c.innerHTML = `
+      <div class="modal-item-row"><span>Meal Preparing</span><span>${GAME.skills.mealPrep.toFixed(1)} (67.2)</span></div>
+      <div class="modal-item-row"><span>Tool Crafting</span><span>${GAME.skills.toolCraft.toFixed(1)} (53.6)</span></div>
+      <div class="modal-item-row"><span>Wood Working</span><span>${GAME.skills.woodWork.toFixed(1)} (55.9)</span></div>
+      <div class="modal-item-row"><span>Skinning</span><span>${GAME.skills.skinning.toFixed(1)} (41.2)</span></div>
+      <div class="modal-item-row"><span>Cooking</span><span>${GAME.skills.cooking.toFixed(1)} (52.3)</span></div>
+      <div class="modal-item-row"><span>Tailoring</span><span>${GAME.skills.tailoring.toFixed(1)} (31.1)</span></div>
+      <div class="modal-item-row"><span>Pottery</span><span>${GAME.skills.pottery.toFixed(1)} (36.7)</span></div>
+    `;
+  }
+  const el = document.getElementById(id);
+  if (el) el.style.display = "flex";
+}
+
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "none";
+}
+
+// --- BOOT ON LOAD ---
+window.addEventListener('DOMContentLoaded', () => {
+  refreshQuestBubble();
+  renderMainInventory();
+  renderBench();
+});
+</script>
+</body>
+</html>
