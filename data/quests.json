@@ -1,0 +1,7 @@
+[
+	{"id": "quest_1", "title": "QUEST 1", "task": "Peel 1x Banana Pod to verify bio-synthesis calibration.", "hint": "Tap Banana Pod to load it onto the bench, then press Craft. No tool needed.", "type": "craft", "target": "peeled_banana"},
+	{"id": "quest_2", "title": "QUEST 2", "task": "Forge 1x Mono-Shard using Raw Mineral + Heavy Slag.", "hint": "Heavy Slag goes in the TOOL slot (tap it first). Raw Mineral goes in an input slot.", "type": "craft", "target": "mono_shard"},
+	{"id": "quest_3", "title": "QUEST 3", "task": "Prepare Banana Wafers using Peeled Banana + Mono-Shard.", "hint": "The Mono-Shard is a tool. Seat it in the TOOL slot, Peeled Banana as the input.", "type": "craft", "target": "banana_wafers"},
+	{"id": "quest_4", "title": "QUEST 4", "task": "Tap the Worker Drone to complete 3 scavenging sorties.", "hint": "Tap or hold the drone to direct its beam at scrap. Each sortie costs drone energy; feed it from the Minion Bag.", "type": "scavenge", "target": 3},
+	{"id": "quest_5", "title": "QUEST 5", "task": "Assemble 1x Field Container using Nano-Strips + Polymer Tendon.", "hint": "No tool required. Nano-Grid Strips and Polymer Tendon go in two input slots.", "type": "craft", "target": "field_container"}
+]

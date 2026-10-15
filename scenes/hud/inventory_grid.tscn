@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/inventory_grid.gd" id="1_grid"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_wood"]
+bg_color = Color(0.277, 0.157, 0.059, 1)
+border_width_left = 6
+border_width_top = 6
+border_width_right = 6
+border_width_bottom = 6
+border_color = Color(0.188, 0.102, 0.031, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+content_margin_left = 20.0
+content_margin_top = 20.0
+content_margin_right = 20.0
+content_margin_bottom = 20.0
+
+[node name="InventoryWrapper" type="PanelContainer"]
+theme_override_styles/panel = SubResource("StyleBoxFlat_wood")
+
+[node name="InventoryGrid" type="GridContainer" parent="."]
+layout_mode = 2
+columns = 5
+script = ExtResource("1_grid")

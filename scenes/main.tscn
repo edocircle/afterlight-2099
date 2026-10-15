@@ -1,0 +1,81 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/main.gd" id="6_main"]
+[ext_resource type="PackedScene" path="res://scenes/hud/top_action_bar.tscn" id="7_bar"]
+[ext_resource type="PackedScene" path="res://scenes/modals/modal_host.tscn" id="8_host"]
+[ext_resource type="PackedScene" path="res://scenes/hud/upper_container_drawer.tscn" id="5_drawer"]
+
+[ext_resource type="PackedScene" path="res://scenes/hud/crafting_slab.tscn" id="2_slab"]
+[ext_resource type="PackedScene" path="res://scenes/hud/character_trio.tscn" id="3_trio"]
+[ext_resource type="PackedScene" path="res://scenes/components/toast_notifier.tscn" id="4_toast"]
+
+[ext_resource type="PackedScene" path="res://scenes/hud/inventory_grid.tscn" id="1_inv"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
+bg_color = Color(0.227, 0.133, 0.067, 1)
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("6_main")
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="Margin" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 60
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 60
+
+[node name="AppContainer" type="VBoxContainer" parent="Margin"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="TopActionBar" parent="Margin/AppContainer" instance=ExtResource("7_bar")]
+layout_mode = 2
+
+[node name="CharacterTrio" parent="Margin/AppContainer" instance=ExtResource("3_trio")]
+layout_mode = 2
+
+[node name="Spacer" type="Control" parent="Margin/AppContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="UpperContainerDrawer" parent="Margin/AppContainer" instance=ExtResource("5_drawer")]
+visible = false
+layout_mode = 2
+
+[node name="CraftingSlab" parent="Margin/AppContainer" instance=ExtResource("2_slab")]
+layout_mode = 2
+
+[node name="InventoryWrapper" parent="Margin/AppContainer" instance=ExtResource("1_inv")]
+layout_mode = 2
+
+[node name="ModalHost" parent="." instance=ExtResource("8_host")]
+visible = false
+layout_mode = 1
+
+[node name="ToastNotifier" parent="." instance=ExtResource("4_toast")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2

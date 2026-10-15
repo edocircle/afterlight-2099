@@ -1,0 +1,12 @@
+[
+	{"id": "recipe_peeled_banana", "name": "Peeled Banana", "inputs": ["banana_pod"], "tool": "", "discipline": "mealPrep", "level_req": 0, "output_item": "peeled_banana", "output_qty": 1},
+	{"id": "recipe_mono_shard", "name": "Mono-Shard", "inputs": ["raw_mineral"], "tool": "heavy_slag", "discipline": "toolCraft", "level_req": 10, "output_item": "mono_shard", "output_qty": 1},
+	{"id": "recipe_banana_wafers", "name": "Banana Wafers", "inputs": ["peeled_banana"], "tool": "mono_shard", "discipline": "mealPrep", "level_req": 25, "output_item": "banana_wafers", "output_qty": 1},
+	{"id": "recipe_pneu_hatchet", "name": "Pneu-Hatchet", "inputs": ["carbon_strut", "mono_shard", "polymer_tendon"], "tool": "", "discipline": "toolCraft", "level_req": 40, "output_item": "pneu_hatchet", "output_qty": 1},
+	{"id": "recipe_field_container", "name": "Field Container", "inputs": ["nano_strips", "polymer_tendon"], "tool": "", "discipline": "woodWork", "level_req": 20, "output_item": "field_container", "output_qty": 1},
+	{"id": "recipe_cargo_pod", "name": "Modular Cargo Pod", "inputs": ["carbon_strut", "polymer_tendon", "hard_chitin"], "tool": "", "discipline": "toolCraft", "level_req": 35, "output_item": "cargo_pod", "output_qty": 1},
+	{"id": "recipe_chitin_mesh", "name": "Hardened Chitin Plate", "inputs": ["hard_chitin", "polymer_tendon"], "tool": "", "discipline": "skinning", "level_req": 15, "output_item": "hard_chitin", "output_qty": 2},
+	{"id": "recipe_roasted_berries", "name": "Thermal Berry Rations", "inputs": ["azure_berry"], "tool": "mono_shard", "discipline": "cooking", "level_req": 20, "output_item": "crimson_berry", "output_qty": 2},
+	{"id": "recipe_nano_mesh", "name": "Reinforced Nano-Mesh", "inputs": ["nano_strips", "carbon_strut"], "tool": "", "discipline": "tailoring", "level_req": 10, "output_item": "nano_strips", "output_qty": 2},
+	{"id": "recipe_composite_brick", "name": "Sintered Silicate Block", "inputs": ["raw_mineral", "composite_log"], "tool": "heavy_slag", "discipline": "pottery", "level_req": 12, "output_item": "raw_mineral", "output_qty": 2}
+]

@@ -1,0 +1,137 @@
+{
+	"power": 420,
+	"equipment": [
+		{
+			"slot": "head",
+			"label": "HEAD",
+			"name": "Environmental Hazard Hood",
+			"category": "Crafted",
+			"desc": "Particulate & toxin filter visor",
+			"power": 85
+		},
+		{
+			"slot": "chest",
+			"label": "CHEST",
+			"name": "Reinforced Tactical Vest",
+			"category": "Crafted",
+			"desc": "Ballistic & thermal undersuit capacitor",
+			"power": 120
+		},
+		{
+			"slot": "legs",
+			"label": "LEGS",
+			"name": "Exoskeleton Leg Braces",
+			"category": "Crafted",
+			"desc": "Servo-actuated carry-weight support",
+			"power": 95
+		},
+		{
+			"slot": "feet",
+			"label": "FEET",
+			"name": "High-Grip Magnetic Boots",
+			"category": "Crafted",
+			"desc": "Fall mitigation & magnetic lock",
+			"power": 60
+		}
+	],
+	"cyberware": [
+		{
+			"slot": "apron",
+			"label": "APRON",
+			"name": "Nanite Fabricator Apron",
+			"category": "GP Cyberware",
+			"value": "+400% GP",
+			"color": "f59e0b",
+			"desc": "Multiplies Generation Points earned on reset"
+		},
+		{
+			"slot": "archive",
+			"label": "ARCHIVE",
+			"name": "Neural Archive Cortex",
+			"category": "GP Cyberware",
+			"value": "+0.2 XP",
+			"color": "f59e0b",
+			"desc": "Flat bonus skill points added to every craft"
+		},
+		{
+			"slot": "gloves",
+			"label": "GLOVES",
+			"name": "Overclocked Servo-Glove",
+			"category": "GP Cyberware",
+			"value": "+30 Skill",
+			"color": "70ff8b",
+			"desc": "Dynamic modifier to effective crafting level"
+		},
+		{
+			"slot": "weapon",
+			"label": "WEAPON",
+			"name": "Tactical Hardpoint",
+			"category": "Crafted",
+			"value": "[ Arc Lance Mk-I ]",
+			"color": "fff3e0",
+			"desc": "Primary kinetic/arc self-defense lance",
+			"power": 60
+		}
+	],
+	"minion_power": 2,
+	"minion_chassis": [
+		{
+			"slot": "head",
+			"label": "HEAD",
+			"name": "Sensor Visor",
+			"desc": "Optical Sensor Visor (Scouting range & node detection).",
+			"power": 1
+		},
+		{
+			"slot": "neck",
+			"label": "NECK",
+			"name": "Chitin Core",
+			"desc": "Reinforced Bone/Chitin Collar (Structural durability).",
+			"power": 1
+		},
+		{
+			"slot": "body",
+			"label": "BODY",
+			"name": "Solar Weave",
+			"desc": "Solar Weave / Camouflage Foliage (Thermal regulation).",
+			"power": 0
+		},
+		{
+			"slot": "feet",
+			"label": "FEET",
+			"name": "Treads",
+			"desc": "All-Terrain Magnetic Treads (Movement efficiency).",
+			"power": 0
+		}
+	],
+	"minion_directives": [
+		{
+			"slot": "aux1",
+			"label": "???",
+			"name": "Aux Expansion",
+			"locked": true,
+			"desc": "Locked mid-game upgrade (Unlocks via city progress/GP)."
+		},
+		{
+			"slot": "aux2",
+			"label": "???",
+			"name": "Aux Expansion",
+			"locked": true,
+			"desc": "Locked mid-game upgrade (Unlocks via city progress/GP)."
+		},
+		{
+			"slot": "gather_type",
+			"label": "GATHER TYPE",
+			"name": "Target Filter",
+			"locked": false,
+			"desc": "Dedicated target filter directive."
+		},
+		{
+			"slot": "fist",
+			"label": "MINION FIST",
+			"name": "Unarmed Harvester",
+			"locked": false,
+			"desc": "Unarmed tool mount for manual salvage interactions."
+		}
+	]
+}

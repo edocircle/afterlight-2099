@@ -1,0 +1,19 @@
+{
+	"protag": [
+		{"key": "mealPrep", "code": "F", "name": "Bio-Nutrient Synthesis", "unlock_level": 0},
+		{"key": "toolCraft", "code": "T", "name": "Kinetic Hardware Craft", "unlock_level": 0},
+		{"key": "woodWork", "code": "W", "name": "Structural Fabrication", "unlock_level": 0},
+		{"key": "skinning", "code": "S", "name": "Bio-Harvesting", "unlock_level": 10},
+		{"key": "cooking", "code": "C", "name": "Thermal Cooking", "unlock_level": 15},
+		{"key": "tailoring", "code": "A", "name": "Nano-Textile Weaving", "unlock_level": 20},
+		{"key": "pottery", "code": "P", "name": "Silicate Sintering", "unlock_level": 25}
+	],
+	"minion": [
+		{"key": "scavenging", "code": "B", "name": "Surface Scavenging", "unlock_level": 0},
+		{"key": "lumber", "code": "A", "name": "Core Pylon Salvage", "unlock_level": 0},
+		{"key": "hunting", "code": "H", "name": "Bio-Specimen Extraction", "unlock_level": 0},
+		{"key": "fishing", "code": "F", "name": "Aquatic Harvesting", "unlock_level": 0},
+		{"key": "communication", "code": "C", "name": "Neural Sync (Comm.)", "unlock_level": 0},
+		{"key": "dredging", "code": "?", "name": "Deep-Core Dredging", "unlock_level": 60}
+	]
+}

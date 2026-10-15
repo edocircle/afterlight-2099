@@ -1,0 +1,30 @@
+{
+	"scavenging": [
+		{"id": "banana_pod", "name": "Banana Pod", "glyph": "🍌", "req_skill": 0.0, "catalyst": "None", "desc": "Wild synthetic flora pod with bio-synthesis nutrients."},
+		{"id": "raw_mineral", "name": "Raw Mineral Chunk", "glyph": "🪨", "req_skill": 5.0, "catalyst": "None", "desc": "Dense scrap mineral deposit from colony ruins."},
+		{"id": "azure_berry", "name": "Azure Poly-Berry", "glyph": "🫐", "req_skill": 15.0, "catalyst": "None", "desc": "Electrolytic berry containing stored energy cells."},
+		{"id": "nano_strips", "name": "Nano-Grid Strips", "glyph": "📜", "req_skill": 30.0, "catalyst": "None", "desc": "Woven conductive nanomaterial sheets."},
+		{"id": "pure_crystal", "name": "Pure Resonant Crystal", "glyph": "💎", "req_skill": 60.0, "catalyst": "Sensor Visor", "desc": "Rare resonant crystal matrix capable of high GP synthesis."}
+	],
+	"lumber": [
+		{"id": "strut_fragment", "name": "Strut Fragment", "glyph": "🪵", "req_skill": 0.0, "catalyst": "None", "desc": "Fractured synthetic timber and support debris."},
+		{"id": "composite_log", "name": "Composite Structural Log", "glyph": "🪵", "req_skill": 10.0, "catalyst": "None", "desc": "Reinforced structural timber used in habitat construction."},
+		{"id": "carbon_strut", "name": "Carbon Strut", "glyph": "🥢", "req_skill": 25.0, "catalyst": "None", "desc": "Extruded high-tensile carbon beam for tool forging."},
+		{"id": "dense_alloy_beam", "name": "Heavy Core Pylon", "glyph": "🏛️", "req_skill": 50.0, "catalyst": "Power: 4", "desc": "High-density structural titanium pylon."}
+	],
+	"hunting": [
+		{"id": "polymer_tendon", "name": "Polymer Tendon", "glyph": "➰", "req_skill": 0.0, "catalyst": "None", "desc": "Flexible synthetic connective tissue scavenged from cyber-fauna."},
+		{"id": "hard_chitin", "name": "Hard Chitin Carapace", "glyph": "🦴", "req_skill": 15.0, "catalyst": "Trap: 1", "desc": "Protective plating harvested from armoured cyber-beetles."},
+		{"id": "bio_synth_pelt", "name": "Thermal Bio-Pelt", "glyph": "🐆", "req_skill": 35.0, "catalyst": "Trap: 2", "desc": "Insulated pelt resistant to surface storms."}
+	],
+	"fishing": [
+		{"id": "crimson_berry", "name": "Crimson Nutrient Berry", "glyph": "🍓", "req_skill": 0.0, "catalyst": "Bait: 0", "desc": "Surface water bio-mass cluster."},
+		{"id": "abyssal_sponge", "name": "Aquatic Bio-Polymer", "glyph": "🧽", "req_skill": 5.0, "catalyst": "Bait: 1", "desc": "Sponge-like filter organism rich in rare polymers."},
+		{"id": "biolum_core", "name": "Bioluminescent Plasma Core", "glyph": "🔮", "req_skill": 20.0, "catalyst": "Bait: 2", "desc": "Deep water luminescent organ with high thermal charge."}
+	],
+	"communication": [
+		{"id": "comm_tier_1", "name": "Signal Noise (Scattered)", "glyph": "📡", "req_skill": 0.0, "catalyst": "10% - 24% Lock", "desc": "Frequent telemetry dropouts. Drone frequently returns junk instead of target."},
+		{"id": "comm_tier_2", "name": "Calibrated Uplink (Stable)", "glyph": "📶", "req_skill": 21.0, "catalyst": "25% - 60% Lock", "desc": "Standard telemetry link. Prioritizes designated gather target."},
+		{"id": "comm_tier_3", "name": "Deep Synapse Lock (Precision)", "glyph": "⚡", "req_skill": 51.0, "catalyst": "65% - 95% Lock", "desc": "Quantum neural lock. Drone acts as an ultra-precise automated harvester."}
+	]
+}

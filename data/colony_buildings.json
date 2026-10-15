@@ -1,0 +1,11 @@
+{
+	"population": 3,
+	"housing_capacity": 6,
+	"buildings": [
+		{"id": "love_hut", "name": "Recombination Pod (Love Hut)", "status": "Ready for Reset"},
+		{"id": "habitats", "name": "Modular Habitats", "status": ""},
+		{"id": "agro_dome", "name": "Agro-Hydroponic Dome", "status": "Generating Berries (Auto)"},
+		{"id": "poly_rig", "name": "Polymer Extrusion Rig", "status": "Generating Struts (Auto)"},
+		{"id": "trade_depot", "name": "Orbital Trade Depot", "status": "Shiny Cores -> GP Exchange"}
+	]
+}
