@@ -65,12 +65,18 @@ func _ready() -> void:
 	drone.pressed.connect(_on_drone_pressed)
 
 	var panel := StyleBoxFlat.new()
-	panel.bg_color = Color(0, 0, 0, 0.25)
-	panel.set_border_width_all(4)
-	panel.border_color = Color("3d210b")
-	panel.set_corner_radius_all(24)
-	panel.set_content_margin_all(20)
+	# Matching prototype: crisp, bright high-tech cyan HUD panel with distinct metallic sheen
+	panel.bg_color = Color("144c66", 0.92) # Solid, bright sci-fi teal backdrop
+	panel.set_border_width_all(5)
+	panel.border_color = Color("38bdf8") # Radiant electric cyan edge
+	panel.set_corner_radius_all(32)
+	panel.set_content_margin_all(24)
+	panel.shadow_color = Color("0284c7", 0.6)
+	panel.shadow_size = 14
 	add_theme_stylebox_override("panel", panel)
+
+
+
 
 	GameState.energy_updated.connect(_on_energy_updated)
 	GameState.identity_updated.connect(_refresh_operative_identity)
@@ -154,7 +160,7 @@ func _make_pod(parent: Control, glyph: String, label: String, border: Color, tar
 	clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	clip.clip_children = CanvasItem.CLIP_CHILDREN_AND_DRAW
 	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color("f6e7c8")
+	bg.bg_color = Color("ffffff") # Clean bright white backing so portraits pop clearly in front
 	bg.set_corner_radius_all(PORTRAIT_RADIUS)
 	clip.add_theme_stylebox_override("panel", bg)
 	mover.add_child(clip)
@@ -165,6 +171,7 @@ func _make_pod(parent: Control, glyph: String, label: String, border: Color, tar
 	pic.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	clip.add_child(pic)
+
 
 	var portrait: Button = CHARACTER_DROP_TARGET.new()
 	portrait.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -178,8 +185,9 @@ func _make_pod(parent: Control, glyph: String, label: String, border: Color, tar
 		pic.texture = load(tex_path)
 	portrait.set_meta("tex_rect", pic)
 	for state in ["normal", "hover", "pressed", "focus"]:
-		portrait.add_theme_stylebox_override(state, _portrait_box(border, state == "pressed"))
+		portrait.add_theme_stylebox_override(state, _portrait_box(border if target != "" else Color("38bdf8"), state == "pressed"))
 	mover.add_child(portrait)
+
 
 
 	if target != "":
@@ -188,12 +196,12 @@ func _make_pod(parent: Control, glyph: String, label: String, border: Color, tar
 		bar.custom_minimum_size = Vector2(0, 48)
 		bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		var fill := StyleBoxFlat.new()
-		fill.bg_color = Color("2ecc71")
+		fill.bg_color = Color("00e5ff") # Luminous cyan energy
 		fill.set_corner_radius_all(24)
 		var back := StyleBoxFlat.new()
-		back.bg_color = Color("170d05")
-		back.set_border_width_all(4)
-		back.border_color = Color("573315")
+		back.bg_color = Color("0a1a2e")
+		back.set_border_width_all(3)
+		back.border_color = Color("00b0ff")
 		back.set_corner_radius_all(24)
 		bar.add_theme_stylebox_override("fill", fill)
 		bar.add_theme_stylebox_override("background", back)
@@ -209,6 +217,7 @@ func _make_pod(parent: Control, glyph: String, label: String, border: Color, tar
 		pod.add_child(bar)
 		_bars[target] = bar
 		_texts[target] = txt
+
 
 	var name_label := Label.new()
 	name_label.text = label
@@ -239,17 +248,17 @@ func _make_bubble(pod: Control) -> void:
 	_bubble.focus_mode = Control.FOCUS_NONE
 	_bubble.custom_minimum_size = Vector2(0, BUBBLE_HEIGHT)
 	_bubble.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
-	_bubble.add_theme_font_size_override("font_size", 32)
+	_bubble.add_theme_font_size_override("font_size", 28)
 	for c in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color"]:
-		_bubble.add_theme_color_override(c, Color("4b280e"))
+		_bubble.add_theme_color_override(c, Color("e0f2fe"))
 	for state in ["normal", "hover", "pressed", "focus"]:
 		var sb := StyleBoxFlat.new()
-		sb.bg_color = Color("fff8eb")
-		sb.set_border_width_all(4)
-		sb.border_color = Color("573315")
-		sb.set_corner_radius_all(24)
-		sb.content_margin_left = 20
-		sb.content_margin_right = 20
+		sb.bg_color = Color("0284c7") # Vibrant sci-fi blue quest banner
+		sb.set_border_width_all(3)
+		sb.border_color = Color("38bdf8")
+		sb.set_corner_radius_all(20)
+		sb.content_margin_left = 22
+		sb.content_margin_right = 22
 		_bubble.add_theme_stylebox_override(state, sb)
 	_bubble.pressed.connect(_open_log)
 	pod.add_child(_bubble)
@@ -258,17 +267,20 @@ func _make_bubble(pod: Control) -> void:
 
 	_bubble.resized.connect(func() -> void: _bubble.pivot_offset = _bubble.size / 2.0)
 	var tween := create_tween().set_loops()
-	tween.tween_property(_bubble, "scale", Vector2(1.08, 1.08), 0.9).set_trans(Tween.TRANS_SINE)
+	tween.tween_property(_bubble, "scale", Vector2(1.06, 1.06), 0.9).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(_bubble, "scale", Vector2.ONE, 0.9).set_trans(Tween.TRANS_SINE)
 
 
 func _portrait_box(border: Color, dark: bool) -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0, 0, 0, 0.22) if dark else Color(0, 0, 0, 0)
-	sb.set_border_width_all(8)
+	sb.bg_color = Color(0, 0, 0, 0.25) if dark else Color(0, 0, 0, 0)
+	sb.set_border_width_all(6)
 	sb.border_color = border
 	sb.set_corner_radius_all(PORTRAIT_RADIUS)
+	sb.shadow_color = Color("00e5ff", 0.35)
+	sb.shadow_size = 6
 	return sb
+
 
 
 func _refresh_bubble() -> void:

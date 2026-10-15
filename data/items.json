@@ -14,8 +14,9 @@
 	"mono_shard": {"name": "Mono-Shard", "glyph": "🗡️", "icon": "", "type": "tool", "max_stack": 1, "max_durability": 35},
 	"banana_wafers": {"name": "Banana Wafers", "glyph": "🥞", "icon": "", "type": "food", "energy_value": 35, "max_stack": 100},
 	"pneu_hatchet": {"name": "Pneu-Hatchet", "glyph": "🪓", "icon": "", "type": "tool", "max_stack": 1, "max_durability": 110},
-	"field_container": {"name": "Field Container", "glyph": "📦", "icon": "", "type": "container", "max_stack": 1, "capacity": 8},
-	"grandmas_container": {"name": "Grandma's Container", "glyph": "📦", "icon": "", "type": "container", "max_stack": 1, "capacity": 8},
+	"field_container": {"name": "Field Container", "glyph": "📦", "icon": "", "type": "container", "max_stack": 1, "capacity": 20},
+	"grandmas_container": {"name": "Grandma's Container", "glyph": "📦", "icon": "", "type": "container", "max_stack": 1, "capacity": 20},
+
 	"cargo_pod": {"name": "Cargo Pod", "glyph": "🧰", "icon": "", "type": "equipment", "equip_slot": "cargo_pod", "max_stack": 1, "capacity": 4},
 	"pure_crystal": {"name": "Pure Resonant Crystal", "glyph": "💎", "icon": "", "type": "material", "max_stack": 100},
 	"dense_alloy_beam": {"name": "Heavy Core Pylon", "glyph": "🏛️", "icon": "", "type": "material", "max_stack": 100},

@@ -64,6 +64,63 @@ func _on_inventory_slot_clicked(index: int) -> void:
 	message.emit("Bench inputs are full.")
 
 
+func drop_item_to_input_slot(slot_idx: int, inv_index: int) -> bool:
+	var item: Variant = InventoryManager.get_slot(inv_index)
+	if item == null:
+		return false
+	var def := InventoryManager.get_def(item["id"])
+	var type: String = def.get("type", "")
+	if type == "container":
+		message.emit("Containers cannot be used as crafting inputs.")
+		return false
+	if type == "tool":
+		message.emit("Tools must be placed in the dedicated tool slot.")
+		return false
+
+	# If this slot has an item: if same id, stack it. If empty, take one. If different id, notify.
+	if bench_inputs[slot_idx] != null:
+		if bench_inputs[slot_idx]["id"] == item["id"]:
+			var one: Variant = InventoryManager.take_one(inv_index)
+			if one != null:
+				bench_inputs[slot_idx]["qty"] = int(bench_inputs[slot_idx]["qty"]) + 1
+				evaluate_bench()
+				return true
+		else:
+			message.emit("Slot already occupied by %s." % InventoryManager.get_def(bench_inputs[slot_idx]["id"]).get("name", "item"))
+			return false
+	else:
+		# Check if this item is already in another bench slot: stack into that slot instead
+		for i in INPUT_COUNT:
+			if bench_inputs[i] != null and bench_inputs[i]["id"] == item["id"]:
+				var one: Variant = InventoryManager.take_one(inv_index)
+				if one != null:
+					bench_inputs[i]["qty"] = int(bench_inputs[i]["qty"]) + 1
+					evaluate_bench()
+					return true
+		bench_inputs[slot_idx] = InventoryManager.take_one(inv_index)
+		evaluate_bench()
+		return true
+	return false
+
+
+func drop_item_to_tool_slot(inv_index: int) -> bool:
+	var item: Variant = InventoryManager.get_slot(inv_index)
+	if item == null:
+		return false
+	var def := InventoryManager.get_def(item["id"])
+	var type: String = def.get("type", "")
+	if type != "tool":
+		message.emit("Only tools can be placed in the tool slot.")
+		return false
+	if bench_tool != null:
+		message.emit("Tool slot is already occupied.")
+		return false
+	bench_tool = InventoryManager.take_one(inv_index)
+	evaluate_bench()
+	return true
+
+
+
 func return_input(slot_idx: int) -> void:
 	var item: Variant = bench_inputs[slot_idx]
 	if item == null:

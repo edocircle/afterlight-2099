@@ -45,14 +45,16 @@ func _build_ui() -> void:
 	size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 	var panel_sb := StyleBoxFlat.new()
-	panel_sb.bg_color = Color("2e2419")
-	panel_sb.set_border_width_all(4)
-	panel_sb.border_color = Color("4f3c27")
-	panel_sb.set_corner_radius_all(16)
-	panel_sb.content_margin_left = 16
-	panel_sb.content_margin_right = 16
-	panel_sb.content_margin_top = 10
-	panel_sb.content_margin_bottom = 10
+	panel_sb.bg_color = Color("0d3d59", 0.78)
+	panel_sb.set_border_width_all(5)
+	panel_sb.border_color = Color("22d3ee")
+	panel_sb.set_corner_radius_all(28)
+	panel_sb.content_margin_left = 18
+	panel_sb.content_margin_right = 18
+	panel_sb.content_margin_top = 12
+	panel_sb.content_margin_bottom = 12
+	panel_sb.shadow_color = Color("0284c7", 0.5)
+	panel_sb.shadow_size = 10
 	add_theme_stylebox_override("panel", panel_sb)
 
 	var root_col := VBoxContainer.new()
@@ -65,15 +67,15 @@ func _build_ui() -> void:
 	root_col.add_child(head_row)
 
 	var icon_lbl := Label.new()
-	icon_lbl.text = "🗺️"
+	icon_lbl.text = "🏛️"
 	icon_lbl.add_theme_font_size_override("font_size", 24)
 	head_row.add_child(icon_lbl)
 
 	_header_lbl = Label.new()
-	_header_lbl.text = "NEW AMSTERDAM COLONY (30x30 MINI-MAP)"
+	_header_lbl.text = "COLONY SECTOR BASTION (30x30 MINI-MAP)"
 	_header_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_header_lbl.add_theme_font_size_override("font_size", 22)
-	_header_lbl.add_theme_color_override("font_color", Color("fdf6e2"))
+	_header_lbl.add_theme_color_override("font_color", Color("e0f2fe"))
 	head_row.add_child(_header_lbl)
 
 	var open_btn := Button.new()
@@ -82,13 +84,13 @@ func _build_ui() -> void:
 	open_btn.custom_minimum_size = Vector2(160, 44)
 	open_btn.add_theme_font_size_override("font_size", 20)
 	var btn_sb := StyleBoxFlat.new()
-	btn_sb.bg_color = Color("573c22")
-	btn_sb.set_border_width_all(2)
-	btn_sb.border_color = Color("d97724")
-	btn_sb.set_corner_radius_all(8)
+	btn_sb.bg_color = Color("0284c7")
+	btn_sb.set_border_width_all(3)
+	btn_sb.border_color = Color("38bdf8")
+	btn_sb.set_corner_radius_all(14)
 	open_btn.add_theme_stylebox_override("normal", btn_sb)
 	var btn_h := btn_sb.duplicate()
-	btn_h.bg_color = Color("734e2c")
+	btn_h.bg_color = Color("0369a1")
 	open_btn.add_theme_stylebox_override("hover", btn_h)
 	open_btn.pressed.connect(func() -> void:
 		GameState.modal_requested.emit("city")
@@ -105,12 +107,14 @@ func _build_ui() -> void:
 	var frame := PanelContainer.new()
 	frame.custom_minimum_size = Vector2(250, 250)
 	var frame_sb := StyleBoxFlat.new()
-	frame_sb.bg_color = Color("15100b")
-	frame_sb.set_border_width_all(3)
-	frame_sb.border_color = Color("3d2e1e")
-	frame_sb.set_corner_radius_all(10)
+	frame_sb.bg_color = Color("082e46", 0.9)
+	frame_sb.set_border_width_all(4)
+	frame_sb.border_color = Color("22d3ee")
+	frame_sb.set_corner_radius_all(16)
 	frame_sb.set_content_margin_all(5)
 	frame.add_theme_stylebox_override("panel", frame_sb)
+
+
 	content_row.add_child(frame)
 
 	_canvas = Control.new()

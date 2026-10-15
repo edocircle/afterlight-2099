@@ -2,10 +2,11 @@ class_name SlotView
 extends Button
 ## Reusable inventory slot: glyph/icon, quantity badge (top-right), durability bar (bottom).
 
-const SLOT_SIZE := Vector2(160, 160)
+const SLOT_SIZE := Vector2(188, 188)
 
 var slot_index: int = -1
 var current_item: Variant = null
+
 
 var _icon_label: Label
 var _icon_tex: TextureRect
@@ -68,14 +69,67 @@ func _init() -> void:
 	_dur_bar.offset_bottom = -6
 	_dur_bar.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var fill := StyleBoxFlat.new()
-	fill.bg_color = Color("27ae60")
+	fill.bg_color = Color("00e5ff")
+	fill.set_corner_radius_all(4)
 	var back := StyleBoxFlat.new()
-	back.bg_color = Color("252019")
+	back.bg_color = Color("0a1626")
 	_dur_bar.add_theme_stylebox_override("fill", fill)
 	_dur_bar.add_theme_stylebox_override("background", back)
 	add_child(_dur_bar)
 
+	# Futuristic rounded module slot styling
+	_apply_default_style()
 	set_item(null)
+
+
+func _apply_default_style() -> void:
+	for state in ["normal", "hover", "pressed"]:
+		var sb := StyleBoxFlat.new()
+		# Translucent dark teal/slate module interior matching prototype
+		sb.bg_color = Color("0d354d", 0.88) if state == "normal" else (Color("124c6e", 0.95) if state == "hover" else Color("082436", 1.0))
+		sb.set_border_width_all(4)
+		# Vivid glowing cyan border matching prototype
+		sb.border_color = Color("22d3ee") if state != "pressed" else Color("38bdf8")
+		sb.set_corner_radius_all(16)
+		sb.shadow_color = Color("0284c7", 0.4)
+		sb.shadow_size = 4
+		add_theme_stylebox_override(state, sb)
+
+
+
+
+var bench_input_slot_index: int = -1
+var is_bench_tool_slot: bool = false
+
+
+func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
+	if not (data is Dictionary) or data.get("source") != "inventory":
+		return false
+	var item: Variant = data.get("item")
+	if item == null or not (item is Dictionary):
+		return false
+	var def := InventoryManager.get_def(item.get("id", ""))
+	var type: String = def.get("type", "")
+
+	if is_bench_tool_slot:
+		return type == "tool"
+	elif bench_input_slot_index >= 0:
+		return type != "tool" and type != "container"
+	return false
+
+
+func _drop_data(_at_position: Vector2, data: Variant) -> void:
+	if not _can_drop_data(_at_position, data):
+		return
+	var inv_idx: int = int(data.get("slot_index", -1))
+	if inv_idx < 0:
+		return
+
+	if is_bench_tool_slot:
+		CraftingSystem.drop_item_to_tool_slot(inv_idx)
+	elif bench_input_slot_index >= 0:
+		CraftingSystem.drop_item_to_input_slot(bench_input_slot_index, inv_idx)
+
 
 
 func set_item(item: Variant) -> void:

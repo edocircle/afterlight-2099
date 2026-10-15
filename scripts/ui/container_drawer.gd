@@ -3,7 +3,7 @@ extends PanelContainer
 ## Upper drawer showing the contents of the open container. Tap an item to move it to the inventory.
 
 const ITEM_SLOT := preload("res://scenes/components/item_slot.tscn")
-const COLUMNS := 4
+const COLUMNS := 5
 
 var _title: Label
 var _grid: GridContainer
@@ -12,9 +12,14 @@ var _views: Array[SlotView] = []
 
 func _ready() -> void:
 	visible = false
+	# Position as overlay starting below TopActionBar (approx 174px down), covering Character Trio and Mini Map
+	offset_top = 174
+	offset_bottom = 1200
+	size_flags_vertical = Control.SIZE_SHRINK_BEGIN
+	mouse_filter = Control.MOUSE_FILTER_STOP
 
 	var col := VBoxContainer.new()
-	col.add_theme_constant_override("separation", 12)
+	col.add_theme_constant_override("separation", 14)
 	add_child(col)
 
 	var head := HBoxContainer.new()
@@ -24,6 +29,7 @@ func _ready() -> void:
 	_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_title.add_theme_font_size_override("font_size", 36)
+	_title.add_theme_color_override("font_color", Color("e0f7fa"))
 	head.add_child(_title)
 
 	var close := Button.new()
@@ -31,10 +37,10 @@ func _ready() -> void:
 	close.focus_mode = Control.FOCUS_NONE
 	close.custom_minimum_size = Vector2(220, 96)
 	close.add_theme_font_size_override("font_size", 36)
-	close.add_theme_color_override("font_color", Color("f59e0b"))
-	close.add_theme_stylebox_override("normal", _box(Color("331c0a"), Color("d97724"), 12))
-	close.add_theme_stylebox_override("hover", _box(Color("4a2a10"), Color("f59e0b"), 12))
-	close.add_theme_stylebox_override("pressed", _box(Color("221205"), Color("f59e0b"), 12))
+	close.add_theme_color_override("font_color", Color("00e5ff"))
+	close.add_theme_stylebox_override("normal", _box(Color("09233b"), Color("00e5ff"), 16))
+	close.add_theme_stylebox_override("hover", _box(Color("10365c"), Color("40c4ff"), 16))
+	close.add_theme_stylebox_override("pressed", _box(Color("051221"), Color("00b0ff"), 16))
 	close.pressed.connect(InventoryManager.close_container)
 	head.add_child(close)
 
@@ -44,10 +50,12 @@ func _ready() -> void:
 	_grid.add_theme_constant_override("v_separation", 12)
 	col.add_child(_grid)
 
-	var panel := _box(Color("6b4120"), Color("d97724"), 20)
-	panel.set_border_width_all(6)
+	var panel := _box(Color("051221"), Color("00e5ff"), 24)
+	panel.set_border_width_all(4)
 	panel.set_content_margin_all(20)
 	add_theme_stylebox_override("panel", panel)
+
+
 
 	InventoryManager.container_opened.connect(_on_opened)
 	InventoryManager.container_closed.connect(func() -> void: visible = false)

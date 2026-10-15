@@ -13,8 +13,11 @@
 [ext_resource type="PackedScene" path="res://scenes/hud/inventory_grid.tscn" id="1_inv"]
 
 
+
+
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
-bg_color = Color(0.227, 0.133, 0.067, 1)
+bg_color = Color(0.04, 0.22, 0.32, 1)
 
 [node name="Main" type="Control"]
 layout_mode = 3
@@ -33,6 +36,19 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
+
+[node name="WaterBackdrop" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
+
+
+
 
 [node name="Margin" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -59,16 +75,18 @@ layout_mode = 2
 [node name="MiniCityMap" parent="Margin/AppContainer" instance=ExtResource("9_minimap")]
 layout_mode = 2
 
-[node name="UpperContainerDrawer" parent="Margin/AppContainer" instance=ExtResource("5_drawer")]
-
-visible = false
-layout_mode = 2
-
 [node name="CraftingSlab" parent="Margin/AppContainer" instance=ExtResource("2_slab")]
+
 layout_mode = 2
 
 [node name="InventoryWrapper" parent="Margin/AppContainer" instance=ExtResource("1_inv")]
 layout_mode = 2
+
+[node name="UpperContainerDrawer" parent="Margin" instance=ExtResource("5_drawer")]
+visible = false
+layout_mode = 2
+size_flags_vertical = 0
+
 
 [node name="ModalHost" parent="." instance=ExtResource("8_host")]
 visible = false

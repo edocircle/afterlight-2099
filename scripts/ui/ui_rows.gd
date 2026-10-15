@@ -5,7 +5,9 @@ extends RefCounted
 static func row(left: String, right: String = "", right_color: Color = Color.WHITE, right_control: Control = null) -> PanelContainer:
 	var panel := PanelContainer.new()
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color("463f33")
+	sb.bg_color = Color("091f36")
+	sb.set_border_width_all(2)
+	sb.border_color = Color("00b0ff")
 	sb.set_corner_radius_all(12)
 	sb.content_margin_left = 24
 	sb.content_margin_right = 24
@@ -25,6 +27,7 @@ static func row(left: String, right: String = "", right_color: Color = Color.WHI
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.custom_minimum_size.x = 120
 	l.add_theme_font_size_override("font_size", 30)
+	l.add_theme_color_override("font_color", Color("e0f7fa"))
 	h.add_child(l)
 
 	if right_control != null:
@@ -49,7 +52,7 @@ static func heading(text: String) -> Label:
 	l.text = text
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	l.add_theme_font_size_override("font_size", 28)
-	l.add_theme_color_override("font_color", Color("faecd8"))
+	l.add_theme_color_override("font_color", Color("00e5ff"))
 	return l
 
 
@@ -62,11 +65,12 @@ static func action_button(text: String) -> Button:
 	b.add_theme_color_override("font_color", Color.WHITE)
 	for state in ["normal", "hover", "pressed"]:
 		var sb := StyleBoxFlat.new()
-		sb.bg_color = {"normal": Color("d97724"), "hover": Color("f59e0b"), "pressed": Color("9b4105")}[state]
-		sb.set_border_width_all(4)
-		sb.border_color = Color("542203")
+		sb.bg_color = {"normal": Color("0091ea"), "hover": Color("00b0ff"), "pressed": Color("0072bb")}[state]
+		sb.set_border_width_all(3)
+		sb.border_color = Color("00e5ff")
 		sb.set_corner_radius_all(12)
 		sb.content_margin_left = 20
 		sb.content_margin_right = 20
 		b.add_theme_stylebox_override(state, sb)
 	return b
+

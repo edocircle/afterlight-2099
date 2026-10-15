@@ -40,9 +40,9 @@ func _ready() -> void:
 	var dialog := PanelContainer.new()
 	dialog.custom_minimum_size = Vector2(1000, 0)
 	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color("766d60")
-	sb.set_border_width_all(8)
-	sb.border_color = Color("363127")
+	sb.bg_color = Color("051221")
+	sb.set_border_width_all(4)
+	sb.border_color = Color("00e5ff")
 	sb.set_corner_radius_all(24)
 	sb.set_content_margin_all(28)
 	dialog.add_theme_stylebox_override("panel", sb)
@@ -58,7 +58,7 @@ func _ready() -> void:
 	_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_title.add_theme_font_size_override("font_size", 40)
-	_title.add_theme_color_override("font_color", Color("2b251d"))
+	_title.add_theme_color_override("font_color", Color("e0f7fa"))
 	head.add_child(_title)
 
 	var close_btn := Button.new()
@@ -66,10 +66,11 @@ func _ready() -> void:
 	close_btn.focus_mode = Control.FOCUS_NONE
 	close_btn.custom_minimum_size = Vector2(96, 96)
 	close_btn.add_theme_font_size_override("font_size", 44)
-	close_btn.add_theme_color_override("font_color", Color("943204"))
+	close_btn.add_theme_color_override("font_color", Color("00e5ff"))
 	close_btn.flat = true
 	close_btn.pressed.connect(close)
 	head.add_child(close_btn)
+
 
 	_scroll = ScrollContainer.new()
 	_scroll.custom_minimum_size = Vector2(888, 1200)
