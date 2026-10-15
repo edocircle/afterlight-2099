@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/ui/mini_city_map.gd" id="1_mini_city_map"]
+
+[node name="MiniCityMap" type="PanelContainer"]
+custom_minimum_size = Vector2(0, 320)
+size_flags_horizontal = 3
+script = ExtResource("1_mini_city_map")

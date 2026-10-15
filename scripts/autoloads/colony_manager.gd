@@ -24,81 +24,125 @@ func _ready() -> void:
 	else:
 		push_error("Invalid JSON in %s" % BUILDINGS_PATH)
 
-	generate_city_map(15)
+	generate_city_map(30)
 
 
-## 15x15 City Map Grid State
-var city_map_size: int = 15
-var city_map_data: Array = [] # 225 strings representing terrain elements
+## 30x30 City Map Grid State
+var city_map_size: int = 30
+var city_map_data: Array = [] # 900 strings representing terrain elements
+var city_buildings: Dictionary = {} # "x,y" -> Dictionary of placed building data
 
 
-func generate_city_map(size: int = 15) -> void:
+func generate_city_map(size: int = 30) -> void:
 	city_map_size = size
 	city_map_data.clear()
 	city_map_data.resize(size * size)
+	city_buildings.clear()
 
-	# 1. Base terrain: fill mostly with lush grass
+	# 1. Base terrain: fill with lush grass
 	for i in size * size:
 		city_map_data[i] = "grass"
 
 	# 2. Clustered Water Bodies (shallow water coasts and deep water interior)
-	var num_water_sources := randi_range(2, 3)
+	var num_water_sources := randi_range(3, 5)
 	for s in num_water_sources:
-		var center_x := randi_range(0, size - 1)
-		var center_y := randi_range(0, size - 1)
-		var radius := randi_range(2, 4)
+		var center_x := randi_range(3, size - 4)
+		var center_y := randi_range(3, size - 4)
+		var radius := randi_range(3, 6)
 		for y in range(maxi(0, center_y - radius), mini(size, center_y + radius + 1)):
 			for x in range(maxi(0, center_x - radius), mini(size, center_x + radius + 1)):
 				var dist := Vector2(x - center_x, y - center_y).length()
-				if dist <= radius * 0.5:
+				if dist <= radius * 0.55:
 					city_map_data[y * size + x] = "deep_water"
-				elif dist <= radius + 0.3 and city_map_data[y * size + x] != "deep_water":
+				elif dist <= radius + 0.4 and city_map_data[y * size + x] != "deep_water":
 					city_map_data[y * size + x] = "shallow_water"
 
-	# 3. Mountain ridges / rock clusters
-	var num_mountain_clusters := randi_range(2, 4)
-	for m in num_mountain_clusters:
-		var mx := randi_range(1, size - 2)
-		var my := randi_range(1, size - 2)
-		var count := randi_range(3, 6)
-		for c in count:
-			var px: int = clampi(mx + randi_range(-1, 1), 0, size - 1)
-			var py: int = clampi(my + randi_range(-1, 1), 0, size - 1)
-			var current: String = city_map_data[py * size + px]
-			if current != "deep_water" and current != "shallow_water":
-				city_map_data[py * size + px] = "mountain"
+	# 3. Contiguous Connected Desert Region
+	# Instead of scattered random spots, create one connected contiguous desert biome with organic spread
+	var desert_cells: Dictionary = {}
+	var desert_origin_x := randi_range(4, size - 5)
+	var desert_origin_y := randi_range(4, size - 5)
+	# Find a start position not already deep water if possible
+	var frontier: Array[Vector2i] = [Vector2i(desert_origin_x, desert_origin_y)]
+	desert_cells[Vector2i(desert_origin_x, desert_origin_y)] = true
 
-	# 4. Forest groves
-	var num_groves := randi_range(3, 5)
+	var target_desert_count := randi_range(90, 140) # contiguous region covering ~10-15% of the 900 tiles
+	var dirs := [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]
+
+	while desert_cells.size() < target_desert_count and not frontier.is_empty():
+		var current_cell: Vector2i = frontier.pick_random()
+		# Expand in directions to form contiguous dunes
+		var step_dir: Vector2i = dirs.pick_random()
+		var next_cell := current_cell + step_dir
+		if next_cell.x >= 0 and next_cell.x < size and next_cell.y >= 0 and next_cell.y < size:
+			if not desert_cells.has(next_cell):
+				desert_cells[next_cell] = true
+				frontier.append(next_cell)
+		# Prune frontier occasionally to keep it localized and contiguous
+		if frontier.size() > 25:
+			frontier.remove_at(randi_range(0, frontier.size() - 1))
+
+	for pos in desert_cells.keys():
+		var idx: int = pos.y * size + pos.x
+		if city_map_data[idx] != "deep_water":
+			city_map_data[idx] = "desert"
+
+	# 4. Forest groves (clustered near grasslands, away from desert)
+	var num_groves := randi_range(5, 8)
 	for g in num_groves:
-		var gx := randi_range(0, size - 1)
-		var gy := randi_range(0, size - 1)
-		var count := randi_range(4, 8)
+		var gx := randi_range(1, size - 2)
+		var gy := randi_range(1, size - 2)
+		var count := randi_range(8, 16)
 		for c in count:
-			var px: int = clampi(gx + randi_range(-2, 2), 0, size - 1)
-			var py: int = clampi(gy + randi_range(-2, 2), 0, size - 1)
+			var px: int = clampi(gx + randi_range(-3, 3), 0, size - 1)
+			var py: int = clampi(gy + randi_range(-3, 3), 0, size - 1)
 			var current: String = city_map_data[py * size + px]
 			if current == "grass":
 				city_map_data[py * size + px] = "forest"
 
-	# 5. Desert / Sand dunes patches
-	var num_deserts := randi_range(1, 3)
-	for d in num_deserts:
-		var dx := randi_range(0, size - 1)
-		var dy := randi_range(0, size - 1)
-		var count := randi_range(3, 7)
+	# 5. Mountain ridges / rock clusters
+	var num_mountain_clusters := randi_range(4, 7)
+	for m in num_mountain_clusters:
+		var mx := randi_range(2, size - 3)
+		var my := randi_range(2, size - 3)
+		var count := randi_range(6, 12)
 		for c in count:
-			var px: int = clampi(dx + randi_range(-1, 1), 0, size - 1)
-			var py: int = clampi(dy + randi_range(-1, 1), 0, size - 1)
+			var px: int = clampi(mx + randi_range(-2, 2), 0, size - 1)
+			var py: int = clampi(my + randi_range(-2, 2), 0, size - 1)
 			var current: String = city_map_data[py * size + px]
-			if current == "grass":
-				city_map_data[py * size + px] = "desert"
+			if current != "deep_water" and current != "shallow_water":
+				city_map_data[py * size + px] = "mountain"
 
 
 func get_tile(x: int, y: int) -> String:
 	if x < 0 or x >= city_map_size or y < 0 or y >= city_map_size:
 		return "grass"
 	return city_map_data[y * city_map_size + x]
+
+
+func get_building_at(x: int, y: int) -> Variant:
+	var key := "%d,%d" % [x, y]
+	return city_buildings.get(key, null)
+
+
+func place_building(x: int, y: int, building_id: String, building_name: String, icon: String) -> bool:
+	if x < 0 or x >= city_map_size or y < 0 or y >= city_map_size:
+		return false
+	var tile_type := get_tile(x, y)
+	if tile_type == "deep_water":
+		GameState.toast_requested.emit("Cannot build on deep water!")
+		return false
+	var key := "%d,%d" % [x, y]
+	city_buildings[key] = {
+		"id": building_id,
+		"name": building_name,
+		"icon": icon,
+		"x": x,
+		"y": y
+	}
+	run_reset.emit()
+	return true
+
 
 
 func reset_run() -> void:

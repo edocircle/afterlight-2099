@@ -8,8 +8,10 @@
 [ext_resource type="PackedScene" path="res://scenes/hud/crafting_slab.tscn" id="2_slab"]
 [ext_resource type="PackedScene" path="res://scenes/hud/character_trio.tscn" id="3_trio"]
 [ext_resource type="PackedScene" path="res://scenes/components/toast_notifier.tscn" id="4_toast"]
+[ext_resource type="PackedScene" path="res://scenes/hud/mini_city_map.tscn" id="9_minimap"]
 
 [ext_resource type="PackedScene" path="res://scenes/hud/inventory_grid.tscn" id="1_inv"]
+
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
 bg_color = Color(0.227, 0.133, 0.067, 1)
@@ -54,11 +56,11 @@ layout_mode = 2
 [node name="CharacterTrio" parent="Margin/AppContainer" instance=ExtResource("3_trio")]
 layout_mode = 2
 
-[node name="Spacer" type="Control" parent="Margin/AppContainer"]
+[node name="MiniCityMap" parent="Margin/AppContainer" instance=ExtResource("9_minimap")]
 layout_mode = 2
-size_flags_vertical = 3
 
 [node name="UpperContainerDrawer" parent="Margin/AppContainer" instance=ExtResource("5_drawer")]
+
 visible = false
 layout_mode = 2
 
