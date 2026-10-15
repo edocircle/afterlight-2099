@@ -211,6 +211,31 @@ func consume_food(target: String) -> bool:
 	return false
 
 
+func feed_slot_to_target(slot_index: int, target: String) -> bool:
+	## Feeds `target` ("player" or "minion") using the item at `slot_index`.
+	var s: Variant = get_slot(slot_index)
+	if s == null:
+		return false
+	var def := get_def(s["id"])
+	if def.get("type", "") != "food":
+		GameState.toast_requested.emit("Not edible! Only food can be consumed.")
+		return false
+	var current: float = GameState.protag_energy if target == "player" else GameState.minion_energy
+	var maximum: float = GameState.max_protag_energy if target == "player" else GameState.max_minion_energy
+	var who := "Pete" if target == "player" else "Helper Bot"
+	if current >= maximum:
+		GameState.toast_requested.emit("%s is already full on energy." % who)
+		return false
+	var energy := float(def.get("energy_value", 0))
+	GameState.replenish_energy(target, energy)
+	s["qty"] = int(s["qty"]) - 1
+	if s["qty"] <= 0:
+		slots[slot_index] = null
+	inventory_changed.emit()
+	GameState.toast_requested.emit("%s fed %s (+%d EN)!" % [who, def.get("name", "Food"), int(energy)])
+	return true
+
+
 func add_item(item: Dictionary) -> bool:
 	## Adds an item dict (from make_item). Returns false if the inventory is full.
 	var def := get_def(item["id"])

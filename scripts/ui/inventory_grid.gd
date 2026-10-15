@@ -15,6 +15,7 @@ func _ready() -> void:
 	add_theme_constant_override("v_separation", 12)
 	for i in InventoryManager.SLOT_COUNT:
 		var view: SlotView = ITEM_SLOT.instantiate()
+		view.slot_index = i
 		view.pressed.connect(_on_slot_pressed.bind(i))
 		add_child(view)
 		_views.append(view)

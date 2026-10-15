@@ -12,6 +12,8 @@ const BOT_TEX := "res://assets/sprites/characters/helper_bot.jpg"
 const BUBBLE_HEIGHT := 70
 const HOLD_SECONDS := 0.5
 const BEAM_INTERVAL := 0.6
+const CHARACTER_DROP_TARGET := preload("res://scripts/ui/character_drop_target.gd")
+
 
 var _bars: Dictionary = {} # target -> ProgressBar
 var _texts: Dictionary = {} # target -> Label
@@ -43,6 +45,7 @@ func _ready() -> void:
 
 	# 3. Worker Drone (Scavenger Minion)
 	var drone := _make_pod(row, "🛸", "HELPER BOT", Color("d97724"), "minion", "SCAVENGER", BOT_TEX)
+
 	_bot_mover = drone.get_parent()
 	_hold = Timer.new()
 	_hold.one_shot = true
@@ -163,8 +166,10 @@ func _make_pod(parent: Control, glyph: String, label: String, border: Color, tar
 	pic.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_COVERED
 	clip.add_child(pic)
 
-	var portrait := Button.new()
+	var portrait: Button = CHARACTER_DROP_TARGET.new()
 	portrait.set_anchors_preset(Control.PRESET_FULL_RECT)
+	portrait.set("drop_target_id", target)
+
 	portrait.text = glyph
 	portrait.focus_mode = Control.FOCUS_NONE
 	portrait.add_theme_font_size_override("font_size", 96)
@@ -175,6 +180,7 @@ func _make_pod(parent: Control, glyph: String, label: String, border: Color, tar
 	for state in ["normal", "hover", "pressed", "focus"]:
 		portrait.add_theme_stylebox_override(state, _portrait_box(border, state == "pressed"))
 	mover.add_child(portrait)
+
 
 	if target != "":
 		var bar := ProgressBar.new()
@@ -315,3 +321,5 @@ func _on_drone_pressed() -> void:
 		return
 	_play_bot_run()
 	MinionSystem.interact()
+
+

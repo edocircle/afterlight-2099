@@ -56,13 +56,28 @@ func refresh() -> void:
 	var can := CraftingSystem.can_craft()
 	_craft_btn.disabled = not can
 	if can:
+		var max_batches: int = 999999
+		for i in CraftingSystem.INPUT_COUNT:
+			if CraftingSystem.bench_inputs[i] != null:
+				max_batches = mini(max_batches, int(CraftingSystem.bench_inputs[i].get("qty", 1)))
+		if CraftingSystem.bench_tool != null:
+			max_batches = mini(max_batches, int(CraftingSystem.bench_tool.get("durability", 1)))
+		var max_by_energy: int = int(GameState.protag_energy / CraftingSystem.ENERGY_COST)
+		max_batches = mini(max_batches, max_by_energy)
+
+		var single_out_qty: int = int(CraftingSystem.active_match.get("output_qty", 1))
 		var chance := CraftingSystem.get_active_success_chance()
+		var count_str := ""
+		if max_batches > 1:
+			count_str = " (x%d)" % (max_batches * single_out_qty)
+
 		if chance < 1.0:
-			_craft_btn.text = "Craft (%d%%)" % int(chance * 100.0)
+			_craft_btn.text = "Craft%s (%d%%)" % [count_str, int(chance * 100.0)]
 		else:
-			_craft_btn.text = "Craft"
+			_craft_btn.text = "Craft%s" % count_str
 	else:
 		_craft_btn.text = "Craft"
+
 
 
 func _box(fill: Color, border: Color) -> StyleBoxFlat:

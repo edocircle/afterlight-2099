@@ -40,11 +40,22 @@ func _on_inventory_slot_clicked(index: int) -> void:
 	if type == "container":
 		return # containers open the drawer (Sprint 4), never go to the bench
 
-	if type == "tool" and bench_tool == null:
-		bench_tool = InventoryManager.take_one(index)
-		evaluate_bench()
+	if type == "tool":
+		if bench_tool == null:
+			bench_tool = InventoryManager.take_one(index)
+			evaluate_bench()
 		return
 
+	# If the item is already on the bench in an input slot, stack it into that same slot
+	for i in INPUT_COUNT:
+		if bench_inputs[i] != null and bench_inputs[i]["id"] == item["id"]:
+			var one: Variant = InventoryManager.take_one(index)
+			if one != null:
+				bench_inputs[i]["qty"] = int(bench_inputs[i]["qty"]) + 1
+				evaluate_bench()
+			return
+
+	# Otherwise put into the first empty slot
 	for i in INPUT_COUNT:
 		if bench_inputs[i] == null:
 			bench_inputs[i] = InventoryManager.take_one(index)
@@ -57,6 +68,7 @@ func return_input(slot_idx: int) -> void:
 	var item: Variant = bench_inputs[slot_idx]
 	if item == null:
 		return
+	# Return the item stack to inventory
 	if InventoryManager.add_item(item):
 		bench_inputs[slot_idx] = null
 		evaluate_bench()
@@ -115,50 +127,91 @@ func craft_active_recipe() -> bool:
 		return false
 
 	var out_id: String = active_match["output_item"]
-	var out_qty: int = int(active_match.get("output_qty", 1))
+	var single_out_qty: int = int(active_match.get("output_qty", 1))
 	var disc: String = active_match.get("discipline", "")
 	var req: float = float(active_match.get("level_req", 0))
 
-	if not InventoryManager.can_add(out_id, out_qty):
-		message.emit("Cargo full! No free slots.")
-		return false
-	if not GameState.consume_energy("player", ENERGY_COST):
-		message.emit("Energy low! Consume food rations.")
+	# Determine max batches based on available input stack sizes
+	var max_batches: int = 999999
+	for i in INPUT_COUNT:
+		if bench_inputs[i] != null:
+			max_batches = mini(max_batches, int(bench_inputs[i].get("qty", 1)))
+	if max_batches <= 0 or max_batches == 999999:
 		return false
 
-	# Tool loses exactly 1 durability; shatters at 0.
+	# Cap by tool durability if a tool is required
 	if bench_tool != null:
-		bench_tool["durability"] = int(bench_tool["durability"]) - 1
+		var tool_dur: int = int(bench_tool.get("durability", 1))
+		max_batches = mini(max_batches, tool_dur)
+
+	# Cap by player energy
+	var max_by_energy: int = int(GameState.protag_energy / ENERGY_COST)
+	if max_by_energy < 1:
+		message.emit("Energy low! Consume food rations.")
+		return false
+	max_batches = mini(max_batches, max_by_energy)
+
+	# Cap by inventory capacity for output
+	while max_batches > 0 and not InventoryManager.can_add(out_id, max_batches * single_out_qty):
+		max_batches -= 1
+
+	if max_batches <= 0:
+		message.emit("Cargo full! No free slots.")
+		return false
+
+	# Deduct energy for batches
+	GameState.consume_energy("player", ENERGY_COST * max_batches)
+
+	# Deduct tool durability
+	if bench_tool != null:
+		bench_tool["durability"] = int(bench_tool["durability"]) - max_batches
 		if bench_tool["durability"] <= 0:
 			var tool_name: String = InventoryManager.get_def(bench_tool["id"]).get("name", "Tool")
 			message.emit("%s shattered!" % tool_name)
 			bench_tool = null
 
-	# 1 of each input is consumed (each bench slot holds exactly 1).
+	# Consume inputs
 	for i in INPUT_COUNT:
-		bench_inputs[i] = null
+		if bench_inputs[i] != null:
+			bench_inputs[i]["qty"] = int(bench_inputs[i]["qty"]) - max_batches
+			if int(bench_inputs[i]["qty"]) <= 0:
+				bench_inputs[i] = null
 
 	var success_chance := GameState.get_recipe_success_chance(disc, req)
-	var roll := randf()
 	var out_name: String = InventoryManager.get_def(out_id).get("name", out_id)
 
-	# Apply XP via progression formula (both on success and failure per Fail-to-Learn Paradox)
-	var xp_res := GameState.apply_craft_skill_xp(disc, req)
-	var xp_msg := ""
-	if xp_res["diminished"]:
-		xp_msg = " [0 XP: Diminished]"
-	elif xp_res["gained"] > 0.0:
-		xp_msg = " [+%.1f Skill!]" % xp_res["gained"]
-	else:
-		xp_msg = " [%d/%d crafts]" % [xp_res["count"], xp_res["req_crafts"]]
+	var successes := 0
+	var failures := 0
+	var total_xp_gained := 0.0
 
-	if roll < success_chance:
-		InventoryManager.add_item(InventoryManager.make_item(out_id, out_qty))
-		message.emit("Crafted %s!%s" % [out_name, xp_msg])
+	for b in max_batches:
+		var roll := randf()
+		var xp_res := GameState.apply_craft_skill_xp(disc, req)
+		total_xp_gained += float(xp_res.get("gained", 0.0))
+		if roll < success_chance:
+			successes += 1
+		else:
+			failures += 1
+
+	if successes > 0:
+		InventoryManager.add_item(InventoryManager.make_item(out_id, successes * single_out_qty))
 		craft_success.emit(out_id)
+
+	var xp_msg := ""
+	if total_xp_gained > 0.0:
+		xp_msg = " [+%.1f Skill!]" % total_xp_gained
+
+	if max_batches == 1:
+		if successes > 0:
+			message.emit("Crafted %s!%s" % [out_name, xp_msg])
+		else:
+			message.emit("Synthesis Failed (%d%% Chance)!%s (Fail-to-Learn)" % [int(success_chance * 100.0), xp_msg])
 	else:
-		# The "Fail-to-Learn" Paradox
-		message.emit("Synthesis Failed (%d%% Chance)!%s (Fail-to-Learn)" % [int(success_chance * 100.0), xp_msg])
+		if failures == 0:
+			message.emit("Crafted %dx %s!%s" % [successes * single_out_qty, out_name, xp_msg])
+		else:
+			message.emit("Batch: %dx %s created (%d failed)!%s" % [successes * single_out_qty, out_name, failures, xp_msg])
 
 	evaluate_bench()
 	return true
+

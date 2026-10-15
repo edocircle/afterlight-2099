@@ -4,6 +4,9 @@ extends Button
 
 const SLOT_SIZE := Vector2(160, 160)
 
+var slot_index: int = -1
+var current_item: Variant = null
+
 var _icon_label: Label
 var _icon_tex: TextureRect
 var _qty_label: Label
@@ -76,6 +79,7 @@ func _init() -> void:
 
 
 func set_item(item: Variant) -> void:
+	current_item = item
 	if item == null:
 		_icon_label.text = ""
 		_icon_tex.texture = null
@@ -103,3 +107,47 @@ func set_item(item: Variant) -> void:
 		_dur_bar.visible = false
 		_dur_label.text = ""
 		_qty_label.text = str(int(item["qty"]))
+
+
+func _get_drag_data(_at_position: Vector2) -> Variant:
+	if current_item == null or slot_index < 0:
+		return null
+
+	var preview := Control.new()
+	var bg := Panel.new()
+	bg.custom_minimum_size = Vector2(100, 100)
+	bg.position = -Vector2(50, 50)
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.2, 0.15, 0.1, 0.85)
+	sb.border_color = Color("f59e0b")
+	sb.set_border_width_all(3)
+	sb.set_corner_radius_all(12)
+	bg.add_theme_stylebox_override("panel", sb)
+	preview.add_child(bg)
+
+	var def := InventoryManager.get_def(current_item["id"])
+	var icon_path: String = def.get("icon", "")
+	if icon_path != "" and ResourceLoader.exists(icon_path):
+		var tex_rect := TextureRect.new()
+		tex_rect.texture = load(icon_path)
+		tex_rect.set_anchors_preset(Control.PRESET_FULL_RECT)
+		tex_rect.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		bg.add_child(tex_rect)
+	else:
+
+		var lbl := Label.new()
+		lbl.text = def.get("glyph", "?")
+		lbl.set_anchors_preset(Control.PRESET_FULL_RECT)
+		lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		lbl.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+		lbl.add_theme_font_size_override("font_size", 42)
+		bg.add_child(lbl)
+
+	set_drag_preview(preview)
+	return {
+		"source": "inventory",
+		"slot_index": slot_index,
+		"item": current_item
+	}
+
