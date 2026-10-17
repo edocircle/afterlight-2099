@@ -38,12 +38,35 @@ func get_def(id: String) -> Dictionary:
 	return _defs.get(id, {})
 
 
+func get_max_stack(item_or_id: Variant) -> int:
+	var id: String = item_or_id["id"] if item_or_id is Dictionary else String(item_or_id)
+	var def := get_def(id)
+	var type: String = def.get("type", "")
+	if type == "container":
+		return 1
+	if type == "tool":
+		return 100 # Tools with matching durability stack up to 100 like other items
+	return int(def.get("max_stack", 100))
+
+
+func can_items_stack(a: Dictionary, b: Dictionary) -> bool:
+	if a.get("id", "") != b.get("id", ""):
+		return false
+	var def := get_def(a.get("id", ""))
+	var type: String = def.get("type", "")
+	if type == "container":
+		return false
+	if type == "tool":
+		return int(a.get("durability", 1)) == int(b.get("durability", 1))
+	return true
+
+
 func make_item(id: String, qty: int = 1) -> Dictionary:
 	var def := get_def(id)
 	var item := {"id": id, "qty": qty}
 	match def.get("type", "material"):
 		"tool":
-			item["qty"] = 1
+			item["qty"] = qty
 			item["durability"] = int(def.get("max_durability", 1))
 		"container":
 			item["qty"] = 1
@@ -57,20 +80,20 @@ func make_item(id: String, qty: int = 1) -> Dictionary:
 func _seed_starter_items() -> void:
 	# Temporary starter pack matching the prototype
 	var container := make_item("grandmas_container")
-	container["contents"][0] = make_item("crimson_berry", 15)
+	container["contents"][0] = make_item("crimson_bio_berry", 15)
 	container["contents"][1] = make_item("strut_fragment", 8)
 	slots[0] = container
-	slots[1] = make_item("raw_mineral", 22)
-	var slag := make_item("heavy_slag")
+	slots[1] = make_item("raw_mineral_chunk", 22)
+	var slag := make_item("heavy_slag_chunk")
 	slag["durability"] = 5
 	slots[2] = slag
 	slots[3] = make_item("banana_pod", 14)
 	slots[4] = make_item("carbon_strut", 32)
 	slots[5] = make_item("polymer_tendon", 17)
-	slots[6] = make_item("nano_strips", 20)
-	slots[7] = make_item("azure_berry", 34)
-	slots[8] = make_item("hard_chitin", 9)
-	slots[9] = make_item("composite_log", 14)
+	slots[6] = make_item("nano_grid_strips", 20)
+	slots[7] = make_item("azure_bio_berry", 34)
+	slots[8] = make_item("hardened_bone_spike", 9)
+	slots[9] = make_item("dense_composite_log", 14)
 	inventory_changed.emit()
 
 
@@ -137,13 +160,13 @@ func extract_from_container(content_index: int) -> bool:
 
 
 func take_one(index: int) -> Variant:
-	## Removes one unit (or the whole tool/container) from a slot and returns it, or null.
+	## Removes one unit (or the whole container) from a slot and returns it, or null.
 	var item: Variant = get_slot(index)
 	if item == null:
 		return null
-	var max_stack := int(get_def(item["id"]).get("max_stack", 1))
-	if max_stack > 1 and item["qty"] > 1:
-		item["qty"] -= 1
+	var max_stack := get_max_stack(item)
+	if max_stack > 1 and int(item.get("qty", 1)) > 1:
+		item["qty"] = int(item["qty"]) - 1
 		var single: Dictionary = item.duplicate(true)
 		single["qty"] = 1
 		inventory_changed.emit()
@@ -153,14 +176,35 @@ func take_one(index: int) -> Variant:
 	return item
 
 
-func can_add(id: String, qty: int = 1) -> bool:
-	var max_stack := int(get_def(id).get("max_stack", 1))
+func take_slot(index: int) -> Variant:
+	## Takes the entire item stack from inventory slot index and returns it, clearing the slot.
+	var item: Variant = get_slot(index)
+	if item == null:
+		return null
+	slots[index] = null
+	inventory_changed.emit()
+	return item
+
+
+
+func can_add(id: String, qty: int = 1, durability: int = -1) -> bool:
+	var def := get_def(id)
+	var type: String = def.get("type", "")
+	var max_stack := get_max_stack(id)
+	var target_dur := durability
+	if target_dur == -1 and type == "tool":
+		target_dur = int(def.get("max_durability", 1))
+
 	var room := 0
 	for s in slots:
 		if s == null:
 			room += max_stack
 		elif s["id"] == id and max_stack > 1:
-			room += max_stack - int(s["qty"])
+			if type == "tool":
+				if int(s.get("durability", 1)) == target_dur:
+					room += max_stack - int(s.get("qty", 1))
+			else:
+				room += max_stack - int(s.get("qty", 1))
 	return room >= qty
 
 
@@ -172,12 +216,19 @@ func can_add_all(items: Dictionary) -> bool:
 			free_slots += 1
 	var needed_slots := 0
 	for id in items:
-		var max_stack := int(get_def(id).get("max_stack", 1))
+		var def := get_def(id)
+		var type: String = def.get("type", "")
+		var max_stack := get_max_stack(id)
 		var leftover: int = int(items[id])
 		if max_stack > 1:
 			for s in slots:
 				if s != null and s["id"] == id:
-					leftover -= max_stack - int(s["qty"])
+					if type == "tool":
+						var default_dur := int(def.get("max_durability", 1))
+						if int(s.get("durability", 1)) == default_dur:
+							leftover -= max_stack - int(s.get("qty", 1))
+					else:
+						leftover -= max_stack - int(s.get("qty", 1))
 		if leftover > 0:
 			needed_slots += ceili(float(leftover) / float(max_stack))
 	return needed_slots <= free_slots
@@ -185,10 +236,14 @@ func can_add_all(items: Dictionary) -> bool:
 
 
 func consume_food(target: String) -> bool:
-	## Feeds `target` ("player" or "minion") with the first food item in the inventory.
+	## Feeds `target` ("player" or "minion") with food from inventory, stopping when full.
 	var current: float = GameState.protag_energy if target == "player" else GameState.minion_energy
 	var maximum: float = GameState.max_protag_energy if target == "player" else GameState.max_minion_energy
-	var who := "Operative" if target == "player" else "Drone"
+	var who := "Pete" if target == "player" else "Helper Bot"
+	if current >= maximum:
+		GameState.toast_requested.emit("%s energy is already full." % who)
+		return false
+
 	for i in SLOT_COUNT:
 		var s: Variant = slots[i]
 		if s == null:
@@ -196,23 +251,42 @@ func consume_food(target: String) -> bool:
 		var def := get_def(s["id"])
 		if def.get("type", "") != "food":
 			continue
-		if current >= maximum:
-			GameState.toast_requested.emit("%s energy is already full." % who)
-			return false
-		var energy := float(def.get("energy_value", 0))
-		GameState.replenish_energy(target, energy)
-		s["qty"] -= 1
-		if s["qty"] <= 0:
-			slots[i] = null
-		inventory_changed.emit()
-		GameState.toast_requested.emit("%s fed +%d EN!" % [who, int(energy)])
-		return true
-	GameState.toast_requested.emit("No food items available in cargo!")
+		var energy_per_item := float(def.get("energy_value", 0))
+		if energy_per_item <= 0.0:
+			continue
+
+		var needed_energy: float = maximum - current
+		var available_qty: int = int(s.get("qty", 1))
+		var consumed: int = 0
+		var sim_energy: float = current
+		while sim_energy < maximum and consumed < available_qty:
+			sim_energy += energy_per_item
+			consumed += 1
+
+		if (float(consumed) * energy_per_item) > needed_energy:
+			consumed -= 1
+
+		if consumed > 0:
+			var total_energy: float = float(consumed) * energy_per_item
+			GameState.replenish_energy(target, total_energy)
+			s["qty"] = int(s["qty"]) - consumed
+			if int(s["qty"]) <= 0:
+				slots[i] = null
+			inventory_changed.emit()
+			var food_name: String = def.get("name", "Food")
+			if consumed == 1:
+				GameState.toast_requested.emit("%s fed 1x %s (+%d EN)!" % [who, food_name, int(total_energy)])
+			else:
+				GameState.toast_requested.emit("%s fed %dx %s (+%d EN)!" % [who, consumed, food_name, int(total_energy)])
+			return true
+
+	GameState.toast_requested.emit("No food items can be fed without exceeding max capacity!")
 	return false
 
 
 func feed_slot_to_target(slot_index: int, target: String) -> bool:
 	## Feeds `target` ("player" or "minion") using the item at `slot_index`.
+	## Consumes up to the needed energy. If quantity * energy > needed energy, quantity is -1.
 	var s: Variant = get_slot(slot_index)
 	if s == null:
 		return false
@@ -226,28 +300,53 @@ func feed_slot_to_target(slot_index: int, target: String) -> bool:
 	if current >= maximum:
 		GameState.toast_requested.emit("%s is already full on energy." % who)
 		return false
-	var energy := float(def.get("energy_value", 0))
-	GameState.replenish_energy(target, energy)
-	s["qty"] = int(s["qty"]) - 1
-	if s["qty"] <= 0:
+
+	var energy_per_item := float(def.get("energy_value", 0))
+	if energy_per_item <= 0.0:
+		GameState.toast_requested.emit("%s has no nutritional energy value!" % def.get("name", "Food"))
+		return false
+
+	var needed_energy: float = maximum - current
+	var available_qty: int = int(s.get("qty", 1))
+	var consumed: int = 0
+	var sim_energy: float = current
+	while sim_energy < maximum and consumed < available_qty:
+		sim_energy += energy_per_item
+		consumed += 1
+
+	if (float(consumed) * energy_per_item) > needed_energy:
+		consumed -= 1
+
+	if consumed <= 0:
+		GameState.toast_requested.emit("%s energy is nearly full (%d/%d EN). Feeding would exceed max energy!" % [who, int(current), int(maximum)])
+		return false
+
+	var total_energy: float = float(consumed) * energy_per_item
+	GameState.replenish_energy(target, total_energy)
+	s["qty"] = int(s["qty"]) - consumed
+	if int(s["qty"]) <= 0:
 		slots[slot_index] = null
 	inventory_changed.emit()
-	GameState.toast_requested.emit("%s fed %s (+%d EN)!" % [who, def.get("name", "Food"), int(energy)])
+
+	var food_name: String = def.get("name", "Food")
+	if consumed == 1:
+		GameState.toast_requested.emit("%s fed 1x %s (+%d EN)!" % [who, food_name, int(total_energy)])
+	else:
+		GameState.toast_requested.emit("%s fed %dx %s (+%d EN)!" % [who, consumed, food_name, int(total_energy)])
 	return true
 
 
 func add_item(item: Dictionary) -> bool:
 	## Adds an item dict (from make_item). Returns false if the inventory is full.
-	var def := get_def(item["id"])
-	var max_stack := int(def.get("max_stack", 1))
+	var max_stack := get_max_stack(item)
 	if max_stack > 1:
 		for i in SLOT_COUNT:
 			var s: Variant = slots[i]
-			if s != null and s["id"] == item["id"] and s["qty"] < max_stack:
+			if s != null and can_items_stack(s, item) and int(s["qty"]) < max_stack:
 				var to_add: int = mini(max_stack - int(s["qty"]), int(item["qty"]))
-				s["qty"] += to_add
-				item["qty"] -= to_add
-				if item["qty"] <= 0:
+				s["qty"] = int(s["qty"]) + to_add
+				item["qty"] = int(item["qty"]) - to_add
+				if int(item["qty"]) <= 0:
 					inventory_changed.emit()
 					return true
 	for i in SLOT_COUNT:

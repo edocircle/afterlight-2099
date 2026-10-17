@@ -38,9 +38,8 @@ func _ready() -> void:
 	close.custom_minimum_size = Vector2(220, 96)
 	close.add_theme_font_size_override("font_size", 36)
 	close.add_theme_color_override("font_color", Color("00e5ff"))
-	close.add_theme_stylebox_override("normal", _box(Color("09233b"), Color("00e5ff"), 16))
-	close.add_theme_stylebox_override("hover", _box(Color("10365c"), Color("40c4ff"), 16))
-	close.add_theme_stylebox_override("pressed", _box(Color("051221"), Color("00b0ff"), 16))
+	for state in ["normal", "hover", "pressed"]:
+		close.add_theme_stylebox_override(state, UiFrames.small_button(state))
 	close.pressed.connect(InventoryManager.close_container)
 	head.add_child(close)
 
@@ -50,10 +49,7 @@ func _ready() -> void:
 	_grid.add_theme_constant_override("v_separation", 12)
 	col.add_child(_grid)
 
-	var panel := _box(Color("051221"), Color("00e5ff"), 24)
-	panel.set_border_width_all(4)
-	panel.set_content_margin_all(20)
-	add_theme_stylebox_override("panel", panel)
+	add_theme_stylebox_override("panel", UiFrames.panel(24))
 
 
 

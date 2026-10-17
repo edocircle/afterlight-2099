@@ -1,25 +1,20 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene format=3 uid="uid://cxbvh7tvkavnl"]
 
-[ext_resource type="Script" path="res://scripts/ui/main.gd" id="6_main"]
-[ext_resource type="PackedScene" path="res://scenes/hud/top_action_bar.tscn" id="7_bar"]
-[ext_resource type="PackedScene" path="res://scenes/modals/modal_host.tscn" id="8_host"]
-[ext_resource type="PackedScene" path="res://scenes/hud/upper_container_drawer.tscn" id="5_drawer"]
-
+[ext_resource type="PackedScene" path="res://scenes/hud/inventory_grid.tscn" id="1_inv"]
 [ext_resource type="PackedScene" path="res://scenes/hud/crafting_slab.tscn" id="2_slab"]
 [ext_resource type="PackedScene" path="res://scenes/hud/character_trio.tscn" id="3_trio"]
 [ext_resource type="PackedScene" path="res://scenes/components/toast_notifier.tscn" id="4_toast"]
+[ext_resource type="PackedScene" path="res://scenes/hud/upper_container_drawer.tscn" id="5_drawer"]
+[ext_resource type="Script" uid="uid://cpa0i61685bqy" path="res://scripts/ui/main.gd" id="6_main"]
+[ext_resource type="PackedScene" path="res://scenes/hud/top_action_bar.tscn" id="7_bar"]
+[ext_resource type="PackedScene" path="res://scenes/modals/modal_host.tscn" id="8_host"]
 [ext_resource type="PackedScene" path="res://scenes/hud/mini_city_map.tscn" id="9_minimap"]
-
-[ext_resource type="PackedScene" path="res://scenes/hud/inventory_grid.tscn" id="1_inv"]
-
-
-
-
+[ext_resource type="Texture2D" uid="uid://bnxjfwvi7hnl8" path="res://assets/sprites/underwater_bg.png" id="10_bg"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bg"]
 bg_color = Color(0.04, 0.22, 0.32, 1)
 
-[node name="Main" type="Control"]
+[node name="Main" type="Control" unique_id=1533824141]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -28,7 +23,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("6_main")
 
-[node name="Background" type="Panel" parent="."]
+[node name="Background" type="Panel" parent="." unique_id=378967331]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -37,20 +32,18 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_bg")
 
-[node name="WaterBackdrop" type="TextureRect" parent="."]
+[node name="WaterBackdrop" type="TextureRect" parent="." unique_id=1755309591]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+texture = ExtResource("10_bg")
 expand_mode = 1
 stretch_mode = 6
 
-
-
-
-[node name="Margin" type="MarginContainer" parent="."]
+[node name="Margin" type="MarginContainer" parent="." unique_id=401981783]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -62,40 +55,40 @@ theme_override_constants/margin_top = 60
 theme_override_constants/margin_right = 40
 theme_override_constants/margin_bottom = 60
 
-[node name="AppContainer" type="VBoxContainer" parent="Margin"]
+[node name="AppContainer" type="VBoxContainer" parent="Margin" unique_id=1541372415]
 layout_mode = 2
 theme_override_constants/separation = 24
 
-[node name="TopActionBar" parent="Margin/AppContainer" instance=ExtResource("7_bar")]
+[node name="TopActionBar" parent="Margin/AppContainer" unique_id=767437539 instance=ExtResource("7_bar")]
 layout_mode = 2
 
-[node name="CharacterTrio" parent="Margin/AppContainer" instance=ExtResource("3_trio")]
+[node name="CharacterTrio" parent="Margin/AppContainer" unique_id=1449132392 instance=ExtResource("3_trio")]
 layout_mode = 2
 
-[node name="MiniCityMap" parent="Margin/AppContainer" instance=ExtResource("9_minimap")]
+[node name="MiniCityMap" parent="Margin/AppContainer" unique_id=660278031 instance=ExtResource("9_minimap")]
 layout_mode = 2
 
-[node name="CraftingSlab" parent="Margin/AppContainer" instance=ExtResource("2_slab")]
-
+[node name="CraftingSlab" parent="Margin/AppContainer" unique_id=1573144795 instance=ExtResource("2_slab")]
 layout_mode = 2
 
-[node name="InventoryWrapper" parent="Margin/AppContainer" instance=ExtResource("1_inv")]
+[node name="InventoryWrapper" parent="Margin/AppContainer" unique_id=998341994 instance=ExtResource("1_inv")]
 layout_mode = 2
 
-[node name="UpperContainerDrawer" parent="Margin" instance=ExtResource("5_drawer")]
-visible = false
+[node name="UpperContainerDrawer" parent="Margin" unique_id=1901125101 instance=ExtResource("5_drawer")]
 layout_mode = 2
 size_flags_vertical = 0
 
-
-[node name="ModalHost" parent="." instance=ExtResource("8_host")]
-visible = false
+[node name="ModalHost" parent="." unique_id=369327691 instance=ExtResource("8_host")]
 layout_mode = 1
 
-[node name="ToastNotifier" parent="." instance=ExtResource("4_toast")]
+[node name="ToastNotifier" parent="." unique_id=1713476839 instance=ExtResource("4_toast")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = 9.0
+offset_right = 8.0
+offset_bottom = 9.0
 grow_horizontal = 2
 grow_vertical = 2

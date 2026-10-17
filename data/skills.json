@@ -1,12 +1,14 @@
 {
 	"protag": [
 		{"key": "mealPrep", "code": "F", "name": "Bio-Nutrient Synthesis", "unlock_level": 0},
-		{"key": "toolCraft", "code": "T", "name": "Kinetic Hardware Craft", "unlock_level": 0},
+		{"key": "toolCraft", "code": "T", "name": "Kinetic Hardware", "unlock_level": 0},
 		{"key": "woodWork", "code": "W", "name": "Structural Fabrication", "unlock_level": 0},
 		{"key": "skinning", "code": "S", "name": "Bio-Harvesting", "unlock_level": 10},
-		{"key": "cooking", "code": "C", "name": "Thermal Cooking", "unlock_level": 15},
-		{"key": "tailoring", "code": "A", "name": "Nano-Textile Weaving", "unlock_level": 20},
-		{"key": "pottery", "code": "P", "name": "Silicate Sintering", "unlock_level": 25}
+		{"key": "cooking", "code": "C", "name": "Culinary Thermal Synthesis", "unlock_level": 15},
+		{"key": "tailoring", "code": "A", "name": "Nano-Textile Fabrication", "unlock_level": 20},
+		{"key": "pottery", "code": "P", "name": "Silicate & Ceramic Sintering", "unlock_level": 25},
+		{"key": "construction", "code": "H", "name": "Habitat & Construction", "unlock_level": 0},
+		{"key": "engraving", "code": "O", "name": "Optical Engraving", "unlock_level": 30}
 	],
 	"minion": [
 		{"key": "scavenging", "code": "B", "name": "Surface Scavenging", "unlock_level": 0},

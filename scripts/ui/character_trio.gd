@@ -35,18 +35,21 @@ func _ready() -> void:
 	add_child(row)
 
 	# 1. Operative (Fabricator / Crafter)
-	_operative_portrait = _make_pod(row, GameState.get_avatar_glyph(), GameState.operative_callsign, Color("f59e0b"), "player", "THE BOY PROTAGONIST", PETE_TEX)
+	_operative_portrait = _make_pod(row, GameState.get_avatar_glyph(), GameState.operative_callsign, UiFrames.CYAN_SOFT, "player", "THE BOY PROTAGONIST", PETE_TEX)
 	_operative_portrait.pressed.connect(InventoryManager.consume_food.bind("player"))
 
 	# 2. Master Fabricator (AI Hologram NPC)
-	var archon := _make_pod(row, "🧙‍♂️", "MAYOR THOMAS", Color("8c8275"), "", "THE MAYOR", MAYOR_TEX)
+	var archon := _make_pod(row, "🧙‍♂️", "MAYOR THOMAS", UiFrames.CYAN_SOFT, "", "THE MAYOR", MAYOR_TEX)
 	archon.pressed.connect(_open_log)
 	_make_bubble(_pod_of(archon))
 
 	# 3. Worker Drone (Scavenger Minion)
-	var drone := _make_pod(row, "🛸", "HELPER BOT", Color("d97724"), "minion", "SCAVENGER", BOT_TEX)
+	var drone := _make_pod(row, "🛸", "HELPER BOT", UiFrames.GOLD, "minion", "SCAVENGER", BOT_TEX)
 
-	_bot_mover = drone.get_parent()
+	_bot_mover = drone.get_meta("mover", null)
+	MinionSystem.scavenge_started.connect(_on_scavenge_started)
+	MinionSystem.scavenge_finished.connect(_on_scavenge_finished)
+
 	_hold = Timer.new()
 	_hold.one_shot = true
 	_hold.wait_time = HOLD_SECONDS
@@ -64,16 +67,7 @@ func _ready() -> void:
 		_beam.stop())
 	drone.pressed.connect(_on_drone_pressed)
 
-	var panel := StyleBoxFlat.new()
-	# Matching prototype: crisp, bright high-tech cyan HUD panel with distinct metallic sheen
-	panel.bg_color = Color("144c66", 0.92) # Solid, bright sci-fi teal backdrop
-	panel.set_border_width_all(5)
-	panel.border_color = Color("38bdf8") # Radiant electric cyan edge
-	panel.set_corner_radius_all(32)
-	panel.set_content_margin_all(24)
-	panel.shadow_color = Color("0284c7", 0.6)
-	panel.shadow_size = 14
-	add_theme_stylebox_override("panel", panel)
+	add_theme_stylebox_override("panel", UiFrames.panel(26))
 
 
 
@@ -99,21 +93,40 @@ func _pod_of(portrait: Button) -> Control:
 	return portrait.get_parent().get_parent().get_parent()
 
 
-func _play_bot_run() -> void:
-	## Helper Bot dashes to the right, scans around for items, then returns.
-	if _bot_mover == null or (_bot_tween != null and _bot_tween.is_running()):
+func _on_scavenge_started(_duration: float, is_depleted: bool) -> void:
+	## Helper Bot dashes down and right, exiting its frame to scout the city!
+	if _bot_mover == null:
 		return
+	if _bot_tween != null and _bot_tween.is_running():
+		_bot_tween.kill()
 	_bot_tween = create_tween()
 	var t := _bot_tween
-	t.tween_property(_bot_mover, "position:x", BOT_RUN_DISTANCE, 0.28).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
-	t.parallel().tween_property(_bot_mover, "rotation", 0.14, 0.28)
-	for i in 2: # looking-out wobble
-		t.tween_property(_bot_mover, "rotation", -0.14, 0.18).set_trans(Tween.TRANS_SINE)
-		t.parallel().tween_property(_bot_mover, "position:y", -14.0, 0.18).set_trans(Tween.TRANS_SINE)
-		t.tween_property(_bot_mover, "rotation", 0.14, 0.18).set_trans(Tween.TRANS_SINE)
-		t.parallel().tween_property(_bot_mover, "position:y", 0.0, 0.18).set_trans(Tween.TRANS_SINE)
-	t.tween_property(_bot_mover, "position:x", 0.0, 0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	t.parallel().tween_property(_bot_mover, "rotation", 0.0, 0.3)
+	var exit_time := 0.20 if not is_depleted else 0.75
+	t.tween_property(_bot_mover, "position:y", 220.0, exit_time).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	t.parallel().tween_property(_bot_mover, "position:x", 80.0, exit_time).set_trans(Tween.TRANS_SINE)
+	t.parallel().tween_property(_bot_mover, "scale", Vector2(0.3, 0.3), exit_time)
+	t.parallel().tween_property(_bot_mover, "modulate:a", 0.0, exit_time)
+
+
+func _on_scavenge_finished(_item_id: String) -> void:
+	## Helper Bot returns from the city, swooping back up into its frame with a happy wiggle!
+	if _bot_mover == null:
+		return
+	if _bot_tween != null and _bot_tween.is_running():
+		_bot_tween.kill()
+	_bot_mover.position = Vector2(0, 180)
+	_bot_mover.scale = Vector2(0.4, 0.4)
+	_bot_mover.modulate.a = 0.0
+	_bot_tween = create_tween()
+	var t := _bot_tween
+	t.tween_property(_bot_mover, "position:y", 0.0, 0.25).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	t.parallel().tween_property(_bot_mover, "position:x", 0.0, 0.25)
+	t.parallel().tween_property(_bot_mover, "scale", Vector2.ONE, 0.25)
+	t.parallel().tween_property(_bot_mover, "modulate:a", 1.0, 0.15)
+	# Happy wiggle
+	t.tween_property(_bot_mover, "rotation", 0.12, 0.08).set_trans(Tween.TRANS_SINE)
+	t.tween_property(_bot_mover, "rotation", -0.12, 0.08).set_trans(Tween.TRANS_SINE)
+	t.tween_property(_bot_mover, "rotation", 0.0, 0.06).set_trans(Tween.TRANS_SINE)
 
 
 func _refresh_operative_identity() -> void:
@@ -155,12 +168,19 @@ func _make_pod(parent: Control, glyph: String, label: String, border: Color, tar
 	mover.pivot_offset = Vector2(PORTRAIT_SIZE, PORTRAIT_SIZE) / 2.0
 	frame.add_child(mover)
 
+	var base_panel := Panel.new()
+	base_panel.set_anchors_preset(Control.PRESET_FULL_RECT)
+	base_panel.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	# Ivory backing with a coloured glow that sits BEHIND the picture (no tint on the art)
+	base_panel.add_theme_stylebox_override("panel", UiFrames.portrait_backing(border, Color("fffdfa"), PORTRAIT_RADIUS))
+	mover.add_child(base_panel)
+
 	var clip := Panel.new()
 	clip.set_anchors_preset(Control.PRESET_FULL_RECT)
 	clip.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	clip.clip_children = CanvasItem.CLIP_CHILDREN_AND_DRAW
+	clip.clip_children = CanvasItem.CLIP_CHILDREN_ONLY
 	var bg := StyleBoxFlat.new()
-	bg.bg_color = Color("ffffff") # Clean bright white backing so portraits pop clearly in front
+	bg.bg_color = Color("ffffff")
 	bg.set_corner_radius_all(PORTRAIT_RADIUS)
 	clip.add_theme_stylebox_override("panel", bg)
 	mover.add_child(clip)
@@ -185,8 +205,9 @@ func _make_pod(parent: Control, glyph: String, label: String, border: Color, tar
 		pic.texture = load(tex_path)
 	portrait.set_meta("tex_rect", pic)
 	for state in ["normal", "hover", "pressed", "focus"]:
-		portrait.add_theme_stylebox_override(state, _portrait_box(border if target != "" else Color("38bdf8"), state == "pressed"))
+		portrait.add_theme_stylebox_override(state, UiFrames.portrait(border, state == "pressed", PORTRAIT_RADIUS))
 	mover.add_child(portrait)
+	portrait.set_meta("mover", mover)
 
 
 
@@ -195,16 +216,8 @@ func _make_pod(parent: Control, glyph: String, label: String, border: Color, tar
 		bar.show_percentage = false
 		bar.custom_minimum_size = Vector2(0, 48)
 		bar.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		var fill := StyleBoxFlat.new()
-		fill.bg_color = Color("00e5ff") # Luminous cyan energy
-		fill.set_corner_radius_all(24)
-		var back := StyleBoxFlat.new()
-		back.bg_color = Color("0a1a2e")
-		back.set_border_width_all(3)
-		back.border_color = Color("00b0ff")
-		back.set_corner_radius_all(24)
-		bar.add_theme_stylebox_override("fill", fill)
-		bar.add_theme_stylebox_override("background", back)
+		bar.add_theme_stylebox_override("fill", UiFrames.bar_fill())
+		bar.add_theme_stylebox_override("background", UiFrames.bar_back())
 		var txt := Label.new()
 		txt.set_anchors_preset(Control.PRESET_FULL_RECT)
 		txt.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -250,16 +263,9 @@ func _make_bubble(pod: Control) -> void:
 	_bubble.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	_bubble.add_theme_font_size_override("font_size", 28)
 	for c in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color"]:
-		_bubble.add_theme_color_override(c, Color("e0f2fe"))
+		_bubble.add_theme_color_override(c, Color("fde68a"))
 	for state in ["normal", "hover", "pressed", "focus"]:
-		var sb := StyleBoxFlat.new()
-		sb.bg_color = Color("0284c7") # Vibrant sci-fi blue quest banner
-		sb.set_border_width_all(3)
-		sb.border_color = Color("38bdf8")
-		sb.set_corner_radius_all(20)
-		sb.content_margin_left = 22
-		sb.content_margin_right = 22
-		_bubble.add_theme_stylebox_override(state, sb)
+		_bubble.add_theme_stylebox_override(state, UiFrames.quest_bubble())
 	_bubble.pressed.connect(_open_log)
 	pod.add_child(_bubble)
 	pod.move_child(_bubble, row.get_index())
@@ -270,16 +276,6 @@ func _make_bubble(pod: Control) -> void:
 	tween.tween_property(_bubble, "scale", Vector2(1.06, 1.06), 0.9).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(_bubble, "scale", Vector2.ONE, 0.9).set_trans(Tween.TRANS_SINE)
 
-
-func _portrait_box(border: Color, dark: bool) -> StyleBoxFlat:
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color(0, 0, 0, 0.25) if dark else Color(0, 0, 0, 0)
-	sb.set_border_width_all(6)
-	sb.border_color = border
-	sb.set_corner_radius_all(PORTRAIT_RADIUS)
-	sb.shadow_color = Color("00e5ff", 0.35)
-	sb.shadow_size = 6
-	return sb
 
 
 
@@ -313,25 +309,23 @@ func _open_log() -> void:
 
 
 func _on_drone_held() -> void:
-	# Hold = repeating manual beam (only without a cargo pod).
-	if MinionSystem.cargo_pod != null:
+	if MinionSystem.cargo_pod != null or MinionSystem.is_scavenging:
 		return
 	_beaming = true
-	_play_bot_run()
 	if MinionSystem.scavenge():
 		_beam.start()
 
 
 func _on_beam_tick() -> void:
-	if not MinionSystem.scavenge():
-		_beam.stop()
+	if not MinionSystem.is_scavenging:
+		if not MinionSystem.scavenge():
+			_beam.stop()
 
 
 func _on_drone_pressed() -> void:
 	if _beaming:
 		_beaming = false
 		return
-	_play_bot_run()
 	MinionSystem.interact()
 
 

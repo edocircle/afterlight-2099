@@ -1,12 +1,2634 @@
 [
-	{"id": "recipe_peeled_banana", "name": "Peeled Banana", "inputs": ["banana_pod"], "tool": "", "discipline": "mealPrep", "level_req": 0, "output_item": "peeled_banana", "output_qty": 1},
-	{"id": "recipe_mono_shard", "name": "Mono-Shard", "inputs": ["raw_mineral"], "tool": "heavy_slag", "discipline": "toolCraft", "level_req": 10, "output_item": "mono_shard", "output_qty": 1},
-	{"id": "recipe_banana_wafers", "name": "Banana Wafers", "inputs": ["peeled_banana"], "tool": "mono_shard", "discipline": "mealPrep", "level_req": 25, "output_item": "banana_wafers", "output_qty": 1},
-	{"id": "recipe_pneu_hatchet", "name": "Pneu-Hatchet", "inputs": ["carbon_strut", "mono_shard", "polymer_tendon"], "tool": "", "discipline": "toolCraft", "level_req": 40, "output_item": "pneu_hatchet", "output_qty": 1},
-	{"id": "recipe_field_container", "name": "Field Container", "inputs": ["nano_strips", "polymer_tendon"], "tool": "", "discipline": "woodWork", "level_req": 20, "output_item": "field_container", "output_qty": 1},
-	{"id": "recipe_cargo_pod", "name": "Modular Cargo Pod", "inputs": ["carbon_strut", "polymer_tendon", "hard_chitin"], "tool": "", "discipline": "toolCraft", "level_req": 35, "output_item": "cargo_pod", "output_qty": 1},
-	{"id": "recipe_chitin_mesh", "name": "Hardened Chitin Plate", "inputs": ["hard_chitin", "polymer_tendon"], "tool": "", "discipline": "skinning", "level_req": 15, "output_item": "hard_chitin", "output_qty": 2},
-	{"id": "recipe_roasted_berries", "name": "Thermal Berry Rations", "inputs": ["azure_berry"], "tool": "mono_shard", "discipline": "cooking", "level_req": 20, "output_item": "crimson_berry", "output_qty": 2},
-	{"id": "recipe_nano_mesh", "name": "Reinforced Nano-Mesh", "inputs": ["nano_strips", "carbon_strut"], "tool": "", "discipline": "tailoring", "level_req": 10, "output_item": "nano_strips", "output_qty": 2},
-	{"id": "recipe_composite_brick", "name": "Sintered Silicate Block", "inputs": ["raw_mineral", "composite_log"], "tool": "heavy_slag", "discipline": "pottery", "level_req": 12, "output_item": "raw_mineral", "output_qty": 2}
+  {
+    "id": "recipe_peeled_banana_pod",
+    "name": "Peeled Banana Pod",
+    "inputs": [
+      "banana_pod"
+    ],
+    "input_costs": {
+      "banana_pod": 1
+    },
+    "tool": "",
+    "discipline": "mealPrep",
+    "level_req": 0,
+    "output_item": "peeled_banana_pod",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_purified_citric_core",
+    "name": "Purified Citric Core",
+    "inputs": [
+      "citric_sphere"
+    ],
+    "input_costs": {
+      "citric_sphere": 1
+    },
+    "tool": "",
+    "discipline": "mealPrep",
+    "level_req": 0,
+    "output_item": "purified_citric_core",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_nutrient_lipid_crystal",
+    "name": "Nutrient Lipid Crystal",
+    "inputs": [
+      "nutrient_walnut"
+    ],
+    "input_costs": {
+      "nutrient_walnut": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "mealPrep",
+    "level_req": 0,
+    "output_item": "nutrient_lipid_crystal",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_diced_banana_wafers",
+    "name": "Diced Banana Wafers",
+    "inputs": [
+      "peeled_banana_pod"
+    ],
+    "input_costs": {
+      "peeled_banana_pod": 1
+    },
+    "tool": "monomolecular_shard",
+    "discipline": "mealPrep",
+    "level_req": 0,
+    "output_item": "diced_banana_wafers",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_protein_legume_pellet",
+    "name": "Protein Legume Pellet",
+    "inputs": [
+      "legume_pod"
+    ],
+    "input_costs": {
+      "legume_pod": 1
+    },
+    "tool": "",
+    "discipline": "mealPrep",
+    "level_req": 5,
+    "output_item": "protein_legume_pellet",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_de_shielded_hydro_pod",
+    "name": "De-shielded Hydro-Pod",
+    "inputs": [
+      "raw_hydro_pod"
+    ],
+    "input_costs": {
+      "raw_hydro_pod": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "mealPrep",
+    "level_req": 10,
+    "output_item": "de_shielded_hydro_pod",
+    "output_qty": 2
+  },
+  {
+    "id": "recipe_electrolyte_gel_extract",
+    "name": "Electrolyte Gel Extract",
+    "inputs": [
+      "de_shielded_hydro_pod",
+      "biopolymer_shell"
+    ],
+    "input_costs": {
+      "de_shielded_hydro_pod": 1,
+      "biopolymer_shell": 1
+    },
+    "tool": "monomolecular_shard",
+    "discipline": "mealPrep",
+    "level_req": 15,
+    "output_item": "electrolyte_gel_extract",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_antioxidant_poly_berries",
+    "name": "Antioxidant Poly-Berries",
+    "inputs": [
+      "azure_bio_berry",
+      "crimson_bio_berry"
+    ],
+    "input_costs": {
+      "azure_bio_berry": 1,
+      "crimson_bio_berry": 1
+    },
+    "tool": "",
+    "discipline": "mealPrep",
+    "level_req": 15,
+    "output_item": "antioxidant_poly_berries",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_condensed_caloric_kernel",
+    "name": "Condensed Caloric Kernel",
+    "inputs": [
+      "chestnut_shell"
+    ],
+    "input_costs": {
+      "chestnut_shell": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "mealPrep",
+    "level_req": 15,
+    "output_item": "condensed_caloric_kernel",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_azure_nectar_paste",
+    "name": "Azure Nectar Paste",
+    "inputs": [
+      "azure_bio_berry",
+      "biopolymer_shell"
+    ],
+    "input_costs": {
+      "azure_bio_berry": 2,
+      "biopolymer_shell": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "mealPrep",
+    "level_req": 15,
+    "output_item": "azure_nectar_paste",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_crimson_stamina_slurry",
+    "name": "Crimson Stamina Slurry",
+    "inputs": [
+      "crimson_bio_berry",
+      "biopolymer_shell"
+    ],
+    "input_costs": {
+      "crimson_bio_berry": 2,
+      "biopolymer_shell": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "mealPrep",
+    "level_req": 15,
+    "output_item": "crimson_stamina_slurry",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_full_spectrum_matrix",
+    "name": "Full-Spectrum Matrix",
+    "inputs": [
+      "antioxidant_poly_berries",
+      "biopolymer_shell"
+    ],
+    "input_costs": {
+      "antioxidant_poly_berries": 2,
+      "biopolymer_shell": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "mealPrep",
+    "level_req": 20,
+    "output_item": "full_spectrum_matrix",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_potassium_fuel_mush",
+    "name": "Potassium Fuel Mush",
+    "inputs": [
+      "peeled_banana_pod",
+      "biopolymer_shell"
+    ],
+    "input_costs": {
+      "peeled_banana_pod": 2,
+      "biopolymer_shell": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "mealPrep",
+    "level_req": 25,
+    "output_item": "potassium_fuel_mush",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_citric_electrolyte_discs",
+    "name": "Citric Electrolyte Discs",
+    "inputs": [
+      "citric_sphere"
+    ],
+    "input_costs": {
+      "citric_sphere": 1
+    },
+    "tool": "monomolecular_shard",
+    "discipline": "mealPrep",
+    "level_req": 25,
+    "output_item": "citric_electrolyte_discs",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_lycopene_bio_wafers",
+    "name": "Lycopene Bio-Wafers",
+    "inputs": [
+      "hydroponic_tomato"
+    ],
+    "input_costs": {
+      "hydroponic_tomato": 1
+    },
+    "tool": "monomolecular_shard",
+    "discipline": "mealPrep",
+    "level_req": 30,
+    "output_item": "lycopene_bio_wafers",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_carotene_energy_slats",
+    "name": "Carotene Energy Slats",
+    "inputs": [
+      "hydroponic_carrot"
+    ],
+    "input_costs": {
+      "hydroponic_carrot": 1
+    },
+    "tool": "monomolecular_shard",
+    "discipline": "mealPrep",
+    "level_req": 30,
+    "output_item": "carotene_energy_slats",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_chlorophyll_shreds",
+    "name": "Chlorophyll Shreds",
+    "inputs": [
+      "crisp_leaf_foliage"
+    ],
+    "input_costs": {
+      "crisp_leaf_foliage": 1
+    },
+    "tool": "monomolecular_shard",
+    "discipline": "mealPrep",
+    "level_req": 30,
+    "output_item": "chlorophyll_shreds",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_nightshade_fillets",
+    "name": "Nightshade Fillets",
+    "inputs": [
+      "hydroponic_eggplant"
+    ],
+    "input_costs": {
+      "hydroponic_eggplant": 1
+    },
+    "tool": "monomolecular_shard",
+    "discipline": "mealPrep",
+    "level_req": 35,
+    "output_item": "nightshade_fillets",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_starch_energy_chips",
+    "name": "Starch Energy Chips",
+    "inputs": [
+      "bio_engineered_potato"
+    ],
+    "input_costs": {
+      "bio_engineered_potato": 1
+    },
+    "tool": "monomolecular_shard",
+    "discipline": "mealPrep",
+    "level_req": 35,
+    "output_item": "starch_energy_chips",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_carotene_bio_salad",
+    "name": "Carotene Bio-Salad",
+    "inputs": [
+      "carotene_energy_slats",
+      "chlorophyll_shreds",
+      "biopolymer_shell"
+    ],
+    "input_costs": {
+      "carotene_energy_slats": 1,
+      "chlorophyll_shreds": 1,
+      "biopolymer_shell": 1
+    },
+    "tool": "",
+    "discipline": "mealPrep",
+    "level_req": 35,
+    "output_item": "carotene_bio_salad",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_lycopene_shield_mix",
+    "name": "Lycopene Shield Mix",
+    "inputs": [
+      "lycopene_bio_wafers",
+      "chlorophyll_shreds",
+      "biopolymer_shell"
+    ],
+    "input_costs": {
+      "lycopene_bio_wafers": 1,
+      "chlorophyll_shreds": 1,
+      "biopolymer_shell": 1
+    },
+    "tool": "",
+    "discipline": "mealPrep",
+    "level_req": 35,
+    "output_item": "lycopene_shield_mix",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_omega_neuro_salad",
+    "name": "Omega Neuro-Salad",
+    "inputs": [
+      "nutrient_lipid_crystal",
+      "chlorophyll_shreds",
+      "biopolymer_shell"
+    ],
+    "input_costs": {
+      "nutrient_lipid_crystal": 1,
+      "chlorophyll_shreds": 1,
+      "biopolymer_shell": 1
+    },
+    "tool": "",
+    "discipline": "mealPrep",
+    "level_req": 40,
+    "output_item": "omega_neuro_salad",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_pressurized_starch_paste",
+    "name": "Pressurized Starch Paste",
+    "inputs": [
+      "bio_engineered_potato",
+      "biopolymer_shell"
+    ],
+    "input_costs": {
+      "bio_engineered_potato": 2,
+      "biopolymer_shell": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "mealPrep",
+    "level_req": 40,
+    "output_item": "pressurized_starch_paste",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_tuber_extract_mash",
+    "name": "Tuber Extract Mash",
+    "inputs": [
+      "deep_soil_tuber",
+      "biopolymer_shell"
+    ],
+    "input_costs": {
+      "deep_soil_tuber": 2,
+      "biopolymer_shell": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "mealPrep",
+    "level_req": 40,
+    "output_item": "tuber_extract_mash",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_bioceramic_marrow",
+    "name": "Bioceramic Marrow",
+    "inputs": [
+      "hardened_bone_spike"
+    ],
+    "input_costs": {
+      "hardened_bone_spike": 1
+    },
+    "tool": "tungsten_breaker_axe",
+    "discipline": "mealPrep",
+    "level_req": 45,
+    "output_item": "bioceramic_marrow",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_fructose_matrix_discs",
+    "name": "Fructose Matrix Discs",
+    "inputs": [
+      "wild_orchard_apple"
+    ],
+    "input_costs": {
+      "wild_orchard_apple": 1
+    },
+    "tool": "vibro_blade_mk_i",
+    "discipline": "mealPrep",
+    "level_req": 50,
+    "output_item": "fructose_matrix_discs",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_citric_bio_infusion",
+    "name": "Citric Bio-Infusion",
+    "inputs": [
+      "purified_citric_core",
+      "biopolymer_shell"
+    ],
+    "input_costs": {
+      "purified_citric_core": 2,
+      "biopolymer_shell": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "mealPrep",
+    "level_req": 55,
+    "output_item": "citric_bio_infusion",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_mycelium_wafers",
+    "name": "Mycelium Wafers",
+    "inputs": [
+      "spore_fungus"
+    ],
+    "input_costs": {
+      "spore_fungus": 1
+    },
+    "tool": "vibro_blade_mk_i",
+    "discipline": "mealPrep",
+    "level_req": 55,
+    "output_item": "mycelium_wafers",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_raw_composite_skewer",
+    "name": "Raw Composite Skewer",
+    "inputs": [
+      "carbon_skewer",
+      "lycopene_bio_wafers",
+      "cultured_red_meat"
+    ],
+    "input_costs": {
+      "carbon_skewer": 1,
+      "lycopene_bio_wafers": 1,
+      "cultured_red_meat": 1
+    },
+    "tool": "",
+    "discipline": "mealPrep",
+    "level_req": 60,
+    "output_item": "raw_composite_skewer",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_monomolecular_shard",
+    "name": "Monomolecular Shard",
+    "inputs": [
+      "raw_mineral_chunk"
+    ],
+    "input_costs": {
+      "raw_mineral_chunk": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "toolCraft",
+    "level_req": 0,
+    "output_item": "monomolecular_shard",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_pneumatic_hatchet",
+    "name": "Pneumatic Hatchet",
+    "inputs": [
+      "carbon_strut",
+      "monomolecular_shard",
+      "polymer_tendon"
+    ],
+    "input_costs": {
+      "carbon_strut": 1,
+      "monomolecular_shard": 1,
+      "polymer_tendon": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 0,
+    "output_item": "pneumatic_hatchet",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_kinetic_impact_mallet",
+    "name": "Kinetic Impact Mallet",
+    "inputs": [
+      "carbon_strut",
+      "heavy_slag_chunk",
+      "polymer_tendon"
+    ],
+    "input_costs": {
+      "carbon_strut": 1,
+      "heavy_slag_chunk": 1,
+      "polymer_tendon": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 5,
+    "output_item": "kinetic_impact_mallet",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_monomolecular_scalpel",
+    "name": "Monomolecular Scalpel",
+    "inputs": [
+      "carbon_strut",
+      "monomolecular_shard"
+    ],
+    "input_costs": {
+      "carbon_strut": 1,
+      "monomolecular_shard": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "toolCraft",
+    "level_req": 5,
+    "output_item": "monomolecular_scalpel",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_tungsten_breaker_bit",
+    "name": "Tungsten Breaker Bit",
+    "inputs": [
+      "raw_mineral_chunk",
+      "monomolecular_shard"
+    ],
+    "input_costs": {
+      "raw_mineral_chunk": 1,
+      "monomolecular_shard": 1
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "toolCraft",
+    "level_req": 10,
+    "output_item": "tungsten_breaker_bit",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_carbon_nanotube_tether",
+    "name": "Carbon Nanotube Tether",
+    "inputs": [
+      "polymer_tendon"
+    ],
+    "input_costs": {
+      "polymer_tendon": 2
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 10,
+    "output_item": "carbon_nanotube_tether",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_tungsten_breaker_axe",
+    "name": "Tungsten Breaker Axe",
+    "inputs": [
+      "tungsten_breaker_bit",
+      "carbon_strut"
+    ],
+    "input_costs": {
+      "tungsten_breaker_bit": 1,
+      "carbon_strut": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "toolCraft",
+    "level_req": 10,
+    "output_item": "tungsten_breaker_axe",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_tactical_arc_lance",
+    "name": "Tactical Arc Lance",
+    "inputs": [
+      "monomolecular_shard",
+      "carbon_strut",
+      "carbon_nanotube_tether"
+    ],
+    "input_costs": {
+      "monomolecular_shard": 1,
+      "carbon_strut": 1,
+      "carbon_nanotube_tether": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 15,
+    "output_item": "tactical_arc_lance",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_micro_thermal_igniter",
+    "name": "Micro-Thermal Igniter",
+    "inputs": [
+      "carbon_strut",
+      "nano_grid_strips"
+    ],
+    "input_costs": {
+      "carbon_strut": 1,
+      "nano_grid_strips": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 15,
+    "output_item": "micro_thermal_igniter",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_thermal_field_core",
+    "name": "Thermal Field Core",
+    "inputs": [
+      "carbon_strut",
+      "raw_mineral_chunk",
+      "micro_thermal_igniter"
+    ],
+    "input_costs": {
+      "carbon_strut": 10,
+      "raw_mineral_chunk": 10,
+      "micro_thermal_igniter": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 15,
+    "output_item": "thermal_field_core",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_kinetic_sling",
+    "name": "Kinetic Sling",
+    "inputs": [
+      "thermal_mylar_pelt",
+      "nano_grid_strips"
+    ],
+    "input_costs": {
+      "thermal_mylar_pelt": 1,
+      "nano_grid_strips": 5
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 20,
+    "output_item": "kinetic_sling",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_bioceramic_hook",
+    "name": "Bioceramic Hook",
+    "inputs": [
+      "hardened_bone_spike"
+    ],
+    "input_costs": {
+      "hardened_bone_spike": 1
+    },
+    "tool": "monomolecular_scalpel",
+    "discipline": "toolCraft",
+    "level_req": 20,
+    "output_item": "bioceramic_hook",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_plasma_hearth_forge",
+    "name": "Plasma Hearth Forge",
+    "inputs": [
+      "carbon_strut",
+      "raw_mineral_chunk",
+      "micro_thermal_igniter"
+    ],
+    "input_costs": {
+      "carbon_strut": 20,
+      "raw_mineral_chunk": 20,
+      "micro_thermal_igniter": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 25,
+    "output_item": "plasma_hearth_forge",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_primitive_grapnel_line",
+    "name": "Primitive Grapnel Line",
+    "inputs": [
+      "bioceramic_hook",
+      "carbon_nanotube_tether"
+    ],
+    "input_costs": {
+      "bioceramic_hook": 1,
+      "carbon_nanotube_tether": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 25,
+    "output_item": "primitive_grapnel_line",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_kinetic_flechette_dart",
+    "name": "Kinetic Flechette Dart",
+    "inputs": [
+      "hardened_bone_spike",
+      "carbon_strut",
+      "stabilizer_fin"
+    ],
+    "input_costs": {
+      "hardened_bone_spike": 1,
+      "carbon_strut": 1,
+      "stabilizer_fin": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "toolCraft",
+    "level_req": 30,
+    "output_item": "kinetic_flechette_dart",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_vibro_blade_mk_i",
+    "name": "Vibro-Blade Mk-I",
+    "inputs": [
+      "carbon_strut",
+      "monomolecular_shard",
+      "carbon_nanotube_tether"
+    ],
+    "input_costs": {
+      "carbon_strut": 1,
+      "monomolecular_shard": 1,
+      "carbon_nanotube_tether": 1
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "toolCraft",
+    "level_req": 35,
+    "output_item": "vibro_blade_mk_i",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_reinforced_demo_mallet",
+    "name": "Reinforced Demo Mallet",
+    "inputs": [
+      "carbon_strut",
+      "heavy_slag_chunk",
+      "carbon_nanotube_tether"
+    ],
+    "input_costs": {
+      "carbon_strut": 1,
+      "heavy_slag_chunk": 1,
+      "carbon_nanotube_tether": 1
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "toolCraft",
+    "level_req": 35,
+    "output_item": "reinforced_demo_mallet",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_braided_kevlar_line",
+    "name": "Braided Kevlar Line",
+    "inputs": [
+      "nano_grid_strips"
+    ],
+    "input_costs": {
+      "nano_grid_strips": 2
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 35,
+    "output_item": "braided_kevlar_line",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_automated_kinetic_line",
+    "name": "Automated Kinetic Line",
+    "inputs": [
+      "primitive_grapnel_line",
+      "carbon_strut",
+      "protein_larva_bait"
+    ],
+    "input_costs": {
+      "primitive_grapnel_line": 1,
+      "carbon_strut": 1,
+      "protein_larva_bait": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 40,
+    "output_item": "automated_kinetic_line",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_chitin_carver_spike",
+    "name": "Chitin Carver Spike",
+    "inputs": [
+      "hardened_bone_spike"
+    ],
+    "input_costs": {
+      "hardened_bone_spike": 1
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "toolCraft",
+    "level_req": 45,
+    "output_item": "chitin_carver_spike",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_pneumatic_bio_talon",
+    "name": "Pneumatic Bio-Talon",
+    "inputs": [
+      "monomolecular_shard",
+      "carbon_strut",
+      "polymer_tendon"
+    ],
+    "input_costs": {
+      "monomolecular_shard": 2,
+      "carbon_strut": 1,
+      "polymer_tendon": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 45,
+    "output_item": "pneumatic_bio_talon",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_radiant_prism_bit",
+    "name": "Radiant Prism Bit",
+    "inputs": [
+      "radiant_energy_core"
+    ],
+    "input_costs": {
+      "radiant_energy_core": 1
+    },
+    "tool": "reinforced_demo_mallet",
+    "discipline": "toolCraft",
+    "level_req": 50,
+    "output_item": "radiant_prism_bit",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_advanced_vibro_blade",
+    "name": "Advanced Vibro-Blade",
+    "inputs": [
+      "chitin_carver_spike",
+      "polished_graphite_strut",
+      "carbon_nanotube_tether"
+    ],
+    "input_costs": {
+      "chitin_carver_spike": 1,
+      "polished_graphite_strut": 1,
+      "carbon_nanotube_tether": 1
+    },
+    "tool": "reinforced_demo_mallet",
+    "discipline": "toolCraft",
+    "level_req": 55,
+    "output_item": "advanced_vibro_blade",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_phase_lance",
+    "name": "Phase-Lance",
+    "inputs": [
+      "chitin_carver_spike",
+      "polished_graphite_strut",
+      "carbon_nanotube_tether"
+    ],
+    "input_costs": {
+      "chitin_carver_spike": 1,
+      "polished_graphite_strut": 1,
+      "carbon_nanotube_tether": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 55,
+    "output_item": "phase_lance",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_magnetic_impact_mallet",
+    "name": "Magnetic Impact Mallet",
+    "inputs": [
+      "heavy_slag_chunk",
+      "polished_graphite_strut",
+      "carbon_nanotube_tether"
+    ],
+    "input_costs": {
+      "heavy_slag_chunk": 1,
+      "polished_graphite_strut": 1,
+      "carbon_nanotube_tether": 1
+    },
+    "tool": "reinforced_demo_mallet",
+    "discipline": "toolCraft",
+    "level_req": 55,
+    "output_item": "magnetic_impact_mallet",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_servo_breacher_axe",
+    "name": "Servo Breacher Axe",
+    "inputs": [
+      "tungsten_breaker_bit",
+      "polished_graphite_strut"
+    ],
+    "input_costs": {
+      "tungsten_breaker_bit": 1,
+      "polished_graphite_strut": 1
+    },
+    "tool": "reinforced_demo_mallet",
+    "discipline": "toolCraft",
+    "level_req": 55,
+    "output_item": "servo_breacher_axe",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_laser_scribe_trowel",
+    "name": "Laser Scribe Trowel",
+    "inputs": [
+      "monomolecular_shard",
+      "carbon_strut",
+      "polymer_tendon"
+    ],
+    "input_costs": {
+      "monomolecular_shard": 1,
+      "carbon_strut": 1,
+      "polymer_tendon": 1
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "toolCraft",
+    "level_req": 60,
+    "output_item": "laser_scribe_trowel",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_sintering_arc_kiln",
+    "name": "Sintering Arc Kiln",
+    "inputs": [
+      "carbon_strut",
+      "sintered_ferro_block",
+      "micro_thermal_igniter"
+    ],
+    "input_costs": {
+      "carbon_strut": 20,
+      "sintered_ferro_block": 20,
+      "micro_thermal_igniter": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 60,
+    "output_item": "sintering_arc_kiln",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_high_output_plasma_flare",
+    "name": "High-Output Plasma Flare",
+    "inputs": [
+      "carbon_strut",
+      "thermal_mylar_pelt",
+      "activated_carbon_cell"
+    ],
+    "input_costs": {
+      "carbon_strut": 1,
+      "thermal_mylar_pelt": 1,
+      "activated_carbon_cell": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "toolCraft",
+    "level_req": 65,
+    "output_item": "high_output_plasma_flare",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_chromatic_scribe",
+    "name": "Chromatic Scribe",
+    "inputs": [
+      "decontaminator_brush",
+      "red_pigment",
+      "blue_pigment"
+    ],
+    "input_costs": {
+      "decontaminator_brush": 1,
+      "red_pigment": 5,
+      "blue_pigment": 5
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 65,
+    "output_item": "chromatic_scribe",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_epic_monomolecular_glaive",
+    "name": "Epic Monomolecular Glaive",
+    "inputs": [
+      "chitin_carver_spike",
+      "polished_graphite_strut",
+      "braided_kevlar_line"
+    ],
+    "input_costs": {
+      "chitin_carver_spike": 1,
+      "polished_graphite_strut": 1,
+      "braided_kevlar_line": 1
+    },
+    "tool": "magnetic_impact_mallet",
+    "discipline": "toolCraft",
+    "level_req": 70,
+    "output_item": "epic_monomolecular_glaive",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_epic_kinetic_impactor",
+    "name": "Epic Kinetic Impactor",
+    "inputs": [
+      "heavy_slag_chunk",
+      "polished_graphite_strut",
+      "braided_kevlar_line"
+    ],
+    "input_costs": {
+      "heavy_slag_chunk": 1,
+      "polished_graphite_strut": 1,
+      "braided_kevlar_line": 1
+    },
+    "tool": "magnetic_impact_mallet",
+    "discipline": "toolCraft",
+    "level_req": 70,
+    "output_item": "epic_kinetic_impactor",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_industrial_sintering_furnace",
+    "name": "Industrial Sintering Furnace",
+    "inputs": [
+      "raw_mineral_chunk",
+      "sintered_ferro_block",
+      "micro_thermal_igniter"
+    ],
+    "input_costs": {
+      "raw_mineral_chunk": 80,
+      "sintered_ferro_block": 80,
+      "micro_thermal_igniter": 1
+    },
+    "tool": "",
+    "discipline": "toolCraft",
+    "level_req": 80,
+    "output_item": "industrial_sintering_furnace",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_tactical_multi_tool_mk_i",
+    "name": "Tactical Multi-Tool Mk-I",
+    "inputs": [
+      "polished_graphite_strut",
+      "heavy_slag_chunk",
+      "braided_kevlar_line"
+    ],
+    "input_costs": {
+      "polished_graphite_strut": 1,
+      "heavy_slag_chunk": 6,
+      "braided_kevlar_line": 3
+    },
+    "tool": "epic_kinetic_impactor",
+    "discipline": "toolCraft",
+    "level_req": 100,
+    "output_item": "tactical_multi_tool_mk_i",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_radiant_omni_tool_prime",
+    "name": "Radiant Omni-Tool Prime",
+    "inputs": [
+      "polished_graphite_strut",
+      "radiant_prism_bit",
+      "braided_kevlar_line"
+    ],
+    "input_costs": {
+      "polished_graphite_strut": 1,
+      "radiant_prism_bit": 6,
+      "braided_kevlar_line": 3
+    },
+    "tool": "epic_kinetic_impactor",
+    "discipline": "toolCraft",
+    "level_req": 120,
+    "output_item": "radiant_omni_tool_prime",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_sharpened_polymer_pylon",
+    "name": "Sharpened Polymer Pylon",
+    "inputs": [
+      "carbon_strut"
+    ],
+    "input_costs": {
+      "carbon_strut": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "woodWork",
+    "level_req": 0,
+    "output_item": "sharpened_polymer_pylon",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_nano_grid_strips",
+    "name": "Nano-Grid Strips",
+    "inputs": [
+      "composite_inner_bark"
+    ],
+    "input_costs": {
+      "composite_inner_bark": 1
+    },
+    "tool": "",
+    "discipline": "woodWork",
+    "level_req": 5,
+    "output_item": "nano_grid_strips",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_field_nanite_pod",
+    "name": "Field Nanite Pod",
+    "inputs": [
+      "nano_grid_strips"
+    ],
+    "input_costs": {
+      "nano_grid_strips": 5
+    },
+    "tool": "",
+    "discipline": "woodWork",
+    "level_req": 10,
+    "output_item": "field_nanite_pod",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_excavator_shovel_mk_i",
+    "name": "Excavator Shovel Mk-I",
+    "inputs": [
+      "dense_composite_log"
+    ],
+    "input_costs": {
+      "dense_composite_log": 1
+    },
+    "tool": "monomolecular_scalpel",
+    "discipline": "woodWork",
+    "level_req": 15,
+    "output_item": "excavator_shovel_mk_i",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_polished_graphite_strut",
+    "name": "Polished Graphite Strut",
+    "inputs": [
+      "carbon_strut"
+    ],
+    "input_costs": {
+      "carbon_strut": 1
+    },
+    "tool": "monomolecular_scalpel",
+    "discipline": "woodWork",
+    "level_req": 25,
+    "output_item": "polished_graphite_strut",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_reinforced_storage_crate",
+    "name": "Reinforced Storage Crate",
+    "inputs": [
+      "nano_grid_strips",
+      "polymer_tendon"
+    ],
+    "input_costs": {
+      "nano_grid_strips": 10,
+      "polymer_tendon": 10
+    },
+    "tool": "",
+    "discipline": "woodWork",
+    "level_req": 30,
+    "output_item": "reinforced_storage_crate",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_sintering_compression_die",
+    "name": "Sintering Compression Die",
+    "inputs": [
+      "carbon_strut",
+      "carbon_nanotube_tether"
+    ],
+    "input_costs": {
+      "carbon_strut": 4,
+      "carbon_nanotube_tether": 4
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "woodWork",
+    "level_req": 35,
+    "output_item": "sintering_compression_die",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_modular_logistics_bin",
+    "name": "Modular Logistics Bin",
+    "inputs": [
+      "carbon_strut",
+      "braided_kevlar_line"
+    ],
+    "input_costs": {
+      "carbon_strut": 20,
+      "braided_kevlar_line": 3
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "woodWork",
+    "level_req": 35,
+    "output_item": "modular_logistics_bin",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_tensioned_rail_bow",
+    "name": "Tensioned Rail Bow",
+    "inputs": [
+      "carbon_strut",
+      "carbon_nanotube_tether"
+    ],
+    "input_costs": {
+      "carbon_strut": 1,
+      "carbon_nanotube_tether": 1
+    },
+    "tool": "",
+    "discipline": "woodWork",
+    "level_req": 40,
+    "output_item": "tensioned_rail_bow",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_ammunition_quiver_drum",
+    "name": "Ammunition Quiver Drum",
+    "inputs": [
+      "outer_shielding",
+      "carbon_nanotube_tether"
+    ],
+    "input_costs": {
+      "outer_shielding": 2,
+      "carbon_nanotube_tether": 3
+    },
+    "tool": "",
+    "discipline": "woodWork",
+    "level_req": 40,
+    "output_item": "ammunition_quiver_drum",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_modular_fabrication_bench",
+    "name": "Modular Fabrication Bench",
+    "inputs": [
+      "carbon_strut",
+      "dense_composite_log"
+    ],
+    "input_costs": {
+      "carbon_strut": 4,
+      "dense_composite_log": 10
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "woodWork",
+    "level_req": 45,
+    "output_item": "modular_fabrication_bench",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_data_slate_tablet",
+    "name": "Data Slate Tablet",
+    "inputs": [
+      "outer_shielding",
+      "carbon_strut"
+    ],
+    "input_costs": {
+      "outer_shielding": 1,
+      "carbon_strut": 4
+    },
+    "tool": "monomolecular_scalpel",
+    "discipline": "woodWork",
+    "level_req": 55,
+    "output_item": "data_slate_tablet",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_phase_tension_bow",
+    "name": "Phase-Tension Bow",
+    "inputs": [
+      "polished_graphite_strut",
+      "braided_kevlar_line"
+    ],
+    "input_costs": {
+      "polished_graphite_strut": 1,
+      "braided_kevlar_line": 1
+    },
+    "tool": "",
+    "discipline": "woodWork",
+    "level_req": 65,
+    "output_item": "phase_tension_bow",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_centrifugal_rotary_table",
+    "name": "Centrifugal Rotary Table",
+    "inputs": [
+      "dense_composite_log",
+      "polished_graphite_strut",
+      "heavy_slag_chunk"
+    ],
+    "input_costs": {
+      "dense_composite_log": 5,
+      "polished_graphite_strut": 3,
+      "heavy_slag_chunk": 2
+    },
+    "tool": "magnetic_impact_mallet",
+    "discipline": "woodWork",
+    "level_req": 70,
+    "output_item": "centrifugal_rotary_table",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_sealed_bulkhead_vault",
+    "name": "Sealed Bulkhead Vault",
+    "inputs": [
+      "nano_grid_strips",
+      "dense_composite_log"
+    ],
+    "input_costs": {
+      "nano_grid_strips": 30,
+      "dense_composite_log": 8
+    },
+    "tool": "",
+    "discipline": "woodWork",
+    "level_req": 70,
+    "output_item": "sealed_bulkhead_vault",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_mega_logistics_cargo_bay",
+    "name": "Mega Logistics Cargo Bay",
+    "inputs": [
+      "nano_grid_strips",
+      "dense_composite_log"
+    ],
+    "input_costs": {
+      "nano_grid_strips": 30,
+      "dense_composite_log": 8
+    },
+    "tool": "",
+    "discipline": "woodWork",
+    "level_req": 90,
+    "output_item": "mega_logistics_cargo_bay",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_seared_potassium_pod",
+    "name": "Seared Potassium Pod",
+    "inputs": [
+      "peeled_banana_pod"
+    ],
+    "input_costs": {
+      "peeled_banana_pod": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 0,
+    "output_item": "seared_potassium_pod",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_toasted_lipid_legume",
+    "name": "Toasted Lipid Legume",
+    "inputs": [
+      "protein_legume_pellet"
+    ],
+    "input_costs": {
+      "protein_legume_pellet": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 0,
+    "output_item": "toasted_lipid_legume",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_crisped_bio_larva",
+    "name": "Crisped Bio-Larva",
+    "inputs": [
+      "protein_larva_bait"
+    ],
+    "input_costs": {
+      "protein_larva_bait": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 0,
+    "output_item": "crisped_bio_larva",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_toasted_caloric_nugget",
+    "name": "Toasted Caloric Nugget",
+    "inputs": [
+      "condensed_caloric_kernel"
+    ],
+    "input_costs": {
+      "condensed_caloric_kernel": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 5,
+    "output_item": "toasted_caloric_nugget",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_roasted_omega_core",
+    "name": "Roasted Omega Core",
+    "inputs": [
+      "nutrient_lipid_crystal"
+    ],
+    "input_costs": {
+      "nutrient_lipid_crystal": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 5,
+    "output_item": "roasted_omega_core",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_glazed_carotene_spear",
+    "name": "Glazed Carotene Spear",
+    "inputs": [
+      "hydroponic_carrot"
+    ],
+    "input_costs": {
+      "hydroponic_carrot": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 10,
+    "output_item": "glazed_carotene_spear",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_blistered_lycopene_ball",
+    "name": "Blistered Lycopene Ball",
+    "inputs": [
+      "hydroponic_tomato"
+    ],
+    "input_costs": {
+      "hydroponic_tomato": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 10,
+    "output_item": "blistered_lycopene_ball",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_thermo_aquatic_fillet",
+    "name": "Thermo Aquatic Fillet",
+    "inputs": [
+      "synthetic_fish_fillet"
+    ],
+    "input_costs": {
+      "synthetic_fish_fillet": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 15,
+    "output_item": "thermo_aquatic_fillet",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_baked_starch_core",
+    "name": "Baked Starch Core",
+    "inputs": [
+      "bio_engineered_potato"
+    ],
+    "input_costs": {
+      "bio_engineered_potato": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 15,
+    "output_item": "baked_starch_core",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_charred_polyphenol_cut",
+    "name": "Charred Polyphenol Cut",
+    "inputs": [
+      "hydroponic_eggplant"
+    ],
+    "input_costs": {
+      "hydroponic_eggplant": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 15,
+    "output_item": "charred_polyphenol_cut",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_seared_avian_cut",
+    "name": "Seared Avian Cut",
+    "inputs": [
+      "cultured_white_protein"
+    ],
+    "input_costs": {
+      "cultured_white_protein": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 20,
+    "output_item": "seared_avian_cut",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_seared_cyber_fauna_loin",
+    "name": "Seared Cyber-Fauna Loin",
+    "inputs": [
+      "cold_blooded_tissue"
+    ],
+    "input_costs": {
+      "cold_blooded_tissue": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 20,
+    "output_item": "seared_cyber_fauna_loin",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_saut_ed_mycelium",
+    "name": "SautÃ©ed Mycelium",
+    "inputs": [
+      "spore_fungus"
+    ],
+    "input_costs": {
+      "spore_fungus": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 25,
+    "output_item": "saut_ed_mycelium",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_charbroiled_myo_slab",
+    "name": "Charbroiled Myo-Slab",
+    "inputs": [
+      "cultured_red_meat"
+    ],
+    "input_costs": {
+      "cultured_red_meat": 1
+    },
+    "tool": "micro_thermal_igniter",
+    "discipline": "cooking",
+    "level_req": 25,
+    "output_item": "charbroiled_myo_slab",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_electrolyte_infusion_tea",
+    "name": "Electrolyte Infusion Tea",
+    "inputs": [
+      "purified_hydro_reservoir",
+      "deep_soil_tuber",
+      "crisp_leaf_foliage"
+    ],
+    "input_costs": {
+      "purified_hydro_reservoir": 1,
+      "deep_soil_tuber": 1,
+      "crisp_leaf_foliage": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "cooking",
+    "level_req": 30,
+    "output_item": "electrolyte_infusion_tea",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_aquatic_amino_bouillon",
+    "name": "Aquatic Amino Bouillon",
+    "inputs": [
+      "purified_hydro_reservoir",
+      "carotene_energy_slats",
+      "synthetic_fish_fillet"
+    ],
+    "input_costs": {
+      "purified_hydro_reservoir": 1,
+      "carotene_energy_slats": 1,
+      "synthetic_fish_fillet": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "cooking",
+    "level_req": 30,
+    "output_item": "aquatic_amino_bouillon",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_fauna_regenerative_broth",
+    "name": "Fauna Regenerative Broth",
+    "inputs": [
+      "purified_hydro_reservoir",
+      "carotene_energy_slats",
+      "cold_blooded_tissue"
+    ],
+    "input_costs": {
+      "purified_hydro_reservoir": 1,
+      "carotene_energy_slats": 1,
+      "cold_blooded_tissue": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "cooking",
+    "level_req": 35,
+    "output_item": "fauna_regenerative_broth",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_cellular_consomm",
+    "name": "Cellular ConsommÃ©",
+    "inputs": [
+      "purified_hydro_reservoir",
+      "carotene_energy_slats",
+      "cultured_white_protein"
+    ],
+    "input_costs": {
+      "purified_hydro_reservoir": 1,
+      "carotene_energy_slats": 1,
+      "cultured_white_protein": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "cooking",
+    "level_req": 40,
+    "output_item": "cellular_consomm",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_heavy_combat_goulash",
+    "name": "Heavy Combat Goulash",
+    "inputs": [
+      "purified_hydro_reservoir",
+      "carotene_energy_slats",
+      "cultured_red_meat"
+    ],
+    "input_costs": {
+      "purified_hydro_reservoir": 1,
+      "carotene_energy_slats": 1,
+      "cultured_red_meat": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "cooking",
+    "level_req": 45,
+    "output_item": "heavy_combat_goulash",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_activated_carbon_cell",
+    "name": "Activated Carbon Cell",
+    "inputs": [
+      "thermal_alloy_smelter",
+      "carbon_strut"
+    ],
+    "input_costs": {
+      "thermal_alloy_smelter": 1,
+      "carbon_strut": 5
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "cooking",
+    "level_req": 50,
+    "output_item": "activated_carbon_cell",
+    "output_qty": 2
+  },
+  {
+    "id": "recipe_flash_ovalbumin_patty",
+    "name": "Flash Ovalbumin Patty",
+    "inputs": [
+      "sintered_alloy_skillet",
+      "cultured_bio_egg"
+    ],
+    "input_costs": {
+      "sintered_alloy_skillet": 1,
+      "cultured_bio_egg": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "cooking",
+    "level_req": 55,
+    "output_item": "flash_ovalbumin_patty",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_high_omega_scramble",
+    "name": "High-Omega Scramble",
+    "inputs": [
+      "flash_ovalbumin_patty",
+      "lycopene_bio_wafers",
+      "synthetic_fish_fillet"
+    ],
+    "input_costs": {
+      "flash_ovalbumin_patty": 1,
+      "lycopene_bio_wafers": 1,
+      "synthetic_fish_fillet": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "cooking",
+    "level_req": 65,
+    "output_item": "high_omega_scramble",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_hyper_protein_scramble",
+    "name": "Hyper-Protein Scramble",
+    "inputs": [
+      "flash_ovalbumin_patty",
+      "lycopene_bio_wafers",
+      "cultured_red_meat"
+    ],
+    "input_costs": {
+      "flash_ovalbumin_patty": 1,
+      "lycopene_bio_wafers": 1,
+      "cultured_red_meat": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "cooking",
+    "level_req": 65,
+    "output_item": "hyper_protein_scramble",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_toasted_amino_skewers",
+    "name": "Toasted Amino Skewers",
+    "inputs": [
+      "raw_composite_skewer"
+    ],
+    "input_costs": {
+      "raw_composite_skewer": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "cooking",
+    "level_req": 70,
+    "output_item": "toasted_amino_skewers",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_chlorophyll_camo_girdle",
+    "name": "Chlorophyll Camo Girdle",
+    "inputs": [
+      "carbon_nanotube_tether",
+      "crisp_leaf_foliage"
+    ],
+    "input_costs": {
+      "carbon_nanotube_tether": 1,
+      "crisp_leaf_foliage": 7
+    },
+    "tool": "",
+    "discipline": "tailoring",
+    "level_req": 0,
+    "output_item": "chlorophyll_camo_girdle",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_foliage_shroud",
+    "name": "Foliage Shroud",
+    "inputs": [
+      "carbon_nanotube_tether",
+      "crisp_leaf_foliage"
+    ],
+    "input_costs": {
+      "carbon_nanotube_tether": 3,
+      "crisp_leaf_foliage": 15
+    },
+    "tool": "",
+    "discipline": "tailoring",
+    "level_req": 0,
+    "output_item": "foliage_shroud",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_bioceramic_choker",
+    "name": "Bioceramic Choker",
+    "inputs": [
+      "carbon_nanotube_tether",
+      "hardened_bone_spike"
+    ],
+    "input_costs": {
+      "carbon_nanotube_tether": 1,
+      "hardened_bone_spike": 5
+    },
+    "tool": "",
+    "discipline": "tailoring",
+    "level_req": 0,
+    "output_item": "bioceramic_choker",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_thermal_mylar_moccasins",
+    "name": "Thermal Mylar Moccasins",
+    "inputs": [
+      "carbon_nanotube_tether",
+      "thermal_mylar_pelt"
+    ],
+    "input_costs": {
+      "carbon_nanotube_tether": 1,
+      "thermal_mylar_pelt": 2
+    },
+    "tool": "",
+    "discipline": "tailoring",
+    "level_req": 10,
+    "output_item": "thermal_mylar_moccasins",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_hazard_greaves",
+    "name": "Hazard Greaves",
+    "inputs": [
+      "carbon_nanotube_tether",
+      "thermal_mylar_pelt"
+    ],
+    "input_costs": {
+      "carbon_nanotube_tether": 2,
+      "thermal_mylar_pelt": 4
+    },
+    "tool": "",
+    "discipline": "tailoring",
+    "level_req": 15,
+    "output_item": "hazard_greaves",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_radiation_undervest",
+    "name": "Radiation Undervest",
+    "inputs": [
+      "carbon_nanotube_tether",
+      "thermal_mylar_pelt"
+    ],
+    "input_costs": {
+      "carbon_nanotube_tether": 2,
+      "thermal_mylar_pelt": 5
+    },
+    "tool": "",
+    "discipline": "tailoring",
+    "level_req": 20,
+    "output_item": "radiation_undervest",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_ultrasonic_suture_rig",
+    "name": "Ultrasonic Suture Rig",
+    "inputs": [
+      "hardened_bone_spike"
+    ],
+    "input_costs": {
+      "hardened_bone_spike": 1
+    },
+    "tool": "monomolecular_shard",
+    "discipline": "tailoring",
+    "level_req": 20,
+    "output_item": "ultrasonic_suture_rig",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_vulcanized_synth_leather",
+    "name": "Vulcanized Synth-Leather",
+    "inputs": [
+      "raw_cyber_fauna_hide"
+    ],
+    "input_costs": {
+      "raw_cyber_fauna_hide": 1
+    },
+    "tool": "monomolecular_shard",
+    "discipline": "tailoring",
+    "level_req": 25,
+    "output_item": "vulcanized_synth_leather",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_cryo_sealed_sabatons",
+    "name": "Cryo-Sealed Sabatons",
+    "inputs": [
+      "braided_kevlar_line",
+      "heavy_ballistic_pelt"
+    ],
+    "input_costs": {
+      "braided_kevlar_line": 1,
+      "heavy_ballistic_pelt": 2
+    },
+    "tool": "ultrasonic_suture_rig",
+    "discipline": "tailoring",
+    "level_req": 30,
+    "output_item": "cryo_sealed_sabatons",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_reinforced_stride_suit",
+    "name": "Reinforced Stride-Suit",
+    "inputs": [
+      "braided_kevlar_line",
+      "heavy_ballistic_pelt"
+    ],
+    "input_costs": {
+      "braided_kevlar_line": 2,
+      "heavy_ballistic_pelt": 4
+    },
+    "tool": "ultrasonic_suture_rig",
+    "discipline": "tailoring",
+    "level_req": 35,
+    "output_item": "reinforced_stride_suit",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_environmental_parka",
+    "name": "Environmental Parka",
+    "inputs": [
+      "braided_kevlar_line",
+      "heavy_ballistic_pelt"
+    ],
+    "input_costs": {
+      "braided_kevlar_line": 3,
+      "heavy_ballistic_pelt": 6
+    },
+    "tool": "ultrasonic_suture_rig",
+    "discipline": "tailoring",
+    "level_req": 40,
+    "output_item": "environmental_parka",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_tactical_treads",
+    "name": "Tactical Treads",
+    "inputs": [
+      "braided_kevlar_line",
+      "vulcanized_synth_leather"
+    ],
+    "input_costs": {
+      "braided_kevlar_line": 1,
+      "vulcanized_synth_leather": 2
+    },
+    "tool": "ultrasonic_suture_rig",
+    "discipline": "tailoring",
+    "level_req": 45,
+    "output_item": "tactical_treads",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_ballistic_cargo_pants",
+    "name": "Ballistic Cargo Pants",
+    "inputs": [
+      "braided_kevlar_line",
+      "vulcanized_synth_leather"
+    ],
+    "input_costs": {
+      "braided_kevlar_line": 2,
+      "vulcanized_synth_leather": 4
+    },
+    "tool": "ultrasonic_suture_rig",
+    "discipline": "tailoring",
+    "level_req": 50,
+    "output_item": "ballistic_cargo_pants",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_assault_carapace",
+    "name": "Assault Carapace",
+    "inputs": [
+      "braided_kevlar_line",
+      "vulcanized_synth_leather"
+    ],
+    "input_costs": {
+      "braided_kevlar_line": 3,
+      "vulcanized_synth_leather": 6
+    },
+    "tool": "ultrasonic_suture_rig",
+    "discipline": "tailoring",
+    "level_req": 55,
+    "output_item": "assault_carapace",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_nanite_fabricator_apron",
+    "name": "Nanite Fabricator Apron",
+    "inputs": [
+      "vulcanized_synth_leather",
+      "braided_kevlar_line"
+    ],
+    "input_costs": {
+      "vulcanized_synth_leather": 4,
+      "braided_kevlar_line": 2
+    },
+    "tool": "ultrasonic_suture_rig",
+    "discipline": "tailoring",
+    "level_req": 60,
+    "output_item": "nanite_fabricator_apron",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_silicate_slurry_matrix",
+    "name": "Silicate Slurry Matrix",
+    "inputs": [
+      "raw_silicate_dust",
+      "purified_hydro_canister"
+    ],
+    "input_costs": {
+      "raw_silicate_dust": 2,
+      "purified_hydro_canister": 1
+    },
+    "tool": "",
+    "discipline": "pottery",
+    "level_req": 0,
+    "output_item": "silicate_slurry_matrix",
+    "output_qty": 2
+  },
+  {
+    "id": "recipe_uncured_geo_matrix",
+    "name": "Uncured Geo-Matrix",
+    "inputs": [
+      "silicate_slurry_matrix"
+    ],
+    "input_costs": {
+      "silicate_slurry_matrix": 4
+    },
+    "tool": "sintering_compression_die",
+    "discipline": "pottery",
+    "level_req": 0,
+    "output_item": "uncured_geo_matrix",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_sintered_ferro_block",
+    "name": "Sintered Ferro-Block",
+    "inputs": [
+      "uncured_geo_matrix"
+    ],
+    "input_costs": {
+      "uncured_geo_matrix": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "pottery",
+    "level_req": 5,
+    "output_item": "sintered_ferro_block",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_uncured_crucible_core",
+    "name": "Uncured Crucible Core",
+    "inputs": [
+      "silicate_slurry_matrix"
+    ],
+    "input_costs": {
+      "silicate_slurry_matrix": 6
+    },
+    "tool": "",
+    "discipline": "pottery",
+    "level_req": 10,
+    "output_item": "uncured_crucible_core",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_thermal_alloy_smelter",
+    "name": "Thermal Alloy Smelter",
+    "inputs": [
+      "uncured_crucible_core"
+    ],
+    "input_costs": {
+      "uncured_crucible_core": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "pottery",
+    "level_req": 10,
+    "output_item": "thermal_alloy_smelter",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_uncured_hydro_cup",
+    "name": "Uncured Hydro-Cup",
+    "inputs": [
+      "silicate_slurry_matrix"
+    ],
+    "input_costs": {
+      "silicate_slurry_matrix": 3
+    },
+    "tool": "",
+    "discipline": "pottery",
+    "level_req": 15,
+    "output_item": "uncured_hydro_cup",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_vitrified_cryo_bowl",
+    "name": "Vitrified Cryo-Bowl",
+    "inputs": [
+      "uncured_hydro_cup"
+    ],
+    "input_costs": {
+      "uncured_hydro_cup": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "pottery",
+    "level_req": 15,
+    "output_item": "vitrified_cryo_bowl",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_uncured_bulk_vessel",
+    "name": "Uncured Bulk Vessel",
+    "inputs": [
+      "silicate_slurry_matrix"
+    ],
+    "input_costs": {
+      "silicate_slurry_matrix": 13
+    },
+    "tool": "",
+    "discipline": "pottery",
+    "level_req": 20,
+    "output_item": "uncured_bulk_vessel",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_pressurized_canister",
+    "name": "Pressurized Canister",
+    "inputs": [
+      "uncured_bulk_vessel"
+    ],
+    "input_costs": {
+      "uncured_bulk_vessel": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "pottery",
+    "level_req": 20,
+    "output_item": "pressurized_canister",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_uncured_skillet",
+    "name": "Uncured Skillet",
+    "inputs": [
+      "silicate_slurry_matrix"
+    ],
+    "input_costs": {
+      "silicate_slurry_matrix": 5
+    },
+    "tool": "",
+    "discipline": "pottery",
+    "level_req": 30,
+    "output_item": "uncured_skillet",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_sintered_alloy_skillet",
+    "name": "Sintered Alloy Skillet",
+    "inputs": [
+      "uncured_skillet"
+    ],
+    "input_costs": {
+      "uncured_skillet": 1
+    },
+    "tool": "plasma_hearth_forge",
+    "discipline": "pottery",
+    "level_req": 30,
+    "output_item": "sintered_alloy_skillet",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_lathe_spun_cistern_vat",
+    "name": "Lathe-Spun Cistern Vat",
+    "inputs": [
+      "silicate_slurry_matrix"
+    ],
+    "input_costs": {
+      "silicate_slurry_matrix": 20
+    },
+    "tool": "centrifugal_rotary_table",
+    "discipline": "pottery",
+    "level_req": 70,
+    "output_item": "lathe_spun_cistern_vat",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_vitrified_heavy_cistern",
+    "name": "Vitrified Heavy Cistern",
+    "inputs": [
+      "lathe_spun_cistern_vat"
+    ],
+    "input_costs": {
+      "lathe_spun_cistern_vat": 1
+    },
+    "tool": "sintering_arc_kiln",
+    "discipline": "pottery",
+    "level_req": 70,
+    "output_item": "vitrified_heavy_cistern",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_precision_silicate_disc",
+    "name": "Precision Silicate Disc",
+    "inputs": [
+      "silicate_slurry_matrix"
+    ],
+    "input_costs": {
+      "silicate_slurry_matrix": 4
+    },
+    "tool": "centrifugal_rotary_table",
+    "discipline": "pottery",
+    "level_req": 75,
+    "output_item": "precision_silicate_disc",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_insulating_substrate",
+    "name": "Insulating Substrate",
+    "inputs": [
+      "precision_silicate_disc"
+    ],
+    "input_costs": {
+      "precision_silicate_disc": 1
+    },
+    "tool": "sintering_arc_kiln",
+    "discipline": "pottery",
+    "level_req": 75,
+    "output_item": "insulating_substrate",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_composite_palisade",
+    "name": "Composite Palisade",
+    "inputs": [
+      "carbon_strut",
+      "braided_kevlar_line",
+      "crisp_leaf_foliage"
+    ],
+    "input_costs": {
+      "carbon_strut": 10,
+      "braided_kevlar_line": 4,
+      "crisp_leaf_foliage": 20
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "construction",
+    "level_req": 0,
+    "output_item": "composite_palisade",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_deep_aquifer_harvester",
+    "name": "Deep Aquifer Harvester",
+    "inputs": [
+      "modular_logistics_bin",
+      "braided_kevlar_line",
+      "sharpened_polymer_pylon"
+    ],
+    "input_costs": {
+      "modular_logistics_bin": 1,
+      "braided_kevlar_line": 3,
+      "sharpened_polymer_pylon": 12
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "construction",
+    "level_req": 0,
+    "output_item": "deep_aquifer_harvester",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_modular_outpost_pod",
+    "name": "Modular Outpost Pod",
+    "inputs": [
+      "composite_palisade"
+    ],
+    "input_costs": {
+      "composite_palisade": 6
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "construction",
+    "level_req": 5,
+    "output_item": "modular_outpost_pod",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_alloy_pylon_barrier",
+    "name": "Alloy Pylon Barrier",
+    "inputs": [
+      "sharpened_polymer_pylon",
+      "braided_kevlar_line"
+    ],
+    "input_costs": {
+      "sharpened_polymer_pylon": 6,
+      "braided_kevlar_line": 3
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "construction",
+    "level_req": 15,
+    "output_item": "alloy_pylon_barrier",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_hydroponic_bio_dome",
+    "name": "Hydroponic Bio-Dome",
+    "inputs": [
+      "silicate_slurry_matrix"
+    ],
+    "input_costs": {
+      "silicate_slurry_matrix": 25
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "construction",
+    "level_req": 25,
+    "output_item": "hydroponic_bio_dome",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_aquatic_culture_basin",
+    "name": "Aquatic Culture Basin",
+    "inputs": [
+      "carbon_strut",
+      "bioceramic_hook",
+      "braided_kevlar_line"
+    ],
+    "input_costs": {
+      "carbon_strut": 4,
+      "bioceramic_hook": 4,
+      "braided_kevlar_line": 4
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "construction",
+    "level_req": 30,
+    "output_item": "aquatic_culture_basin",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_fauna_containment_pen",
+    "name": "Fauna Containment Pen",
+    "inputs": [
+      "alloy_pylon_barrier",
+      "crisp_leaf_foliage"
+    ],
+    "input_costs": {
+      "alloy_pylon_barrier": 4,
+      "crisp_leaf_foliage": 40
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "construction",
+    "level_req": 35,
+    "output_item": "fauna_containment_pen",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_reinforced_hab_unit",
+    "name": "Reinforced Hab Unit",
+    "inputs": [
+      "alloy_pylon_barrier"
+    ],
+    "input_costs": {
+      "alloy_pylon_barrier": 6
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "construction",
+    "level_req": 40,
+    "output_item": "reinforced_hab_unit",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_strut_extrusion_rig",
+    "name": "Strut Extrusion Rig",
+    "inputs": [
+      "sharpened_polymer_pylon",
+      "braided_kevlar_line"
+    ],
+    "input_costs": {
+      "sharpened_polymer_pylon": 30,
+      "braided_kevlar_line": 5
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "construction",
+    "level_req": 45,
+    "output_item": "strut_extrusion_rig",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_titanium_support_beam",
+    "name": "Titanium Support Beam",
+    "inputs": [
+      "sharpened_polymer_pylon",
+      "braided_kevlar_line"
+    ],
+    "input_costs": {
+      "sharpened_polymer_pylon": 3,
+      "braided_kevlar_line": 2
+    },
+    "tool": "kinetic_impact_mallet",
+    "discipline": "construction",
+    "level_req": 50,
+    "output_item": "titanium_support_beam",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_ferro_ceramic_bastion",
+    "name": "Ferro-Ceramic Bastion",
+    "inputs": [
+      "sintered_ferro_block",
+      "silicate_slurry_matrix"
+    ],
+    "input_costs": {
+      "sintered_ferro_block": 10,
+      "silicate_slurry_matrix": 4
+    },
+    "tool": "laser_scribe_trowel",
+    "discipline": "construction",
+    "level_req": 55,
+    "output_item": "ferro_ceramic_bastion",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_ceramic_pylon_pillar",
+    "name": "Ceramic Pylon Pillar",
+    "inputs": [
+      "sintered_ferro_block",
+      "silicate_slurry_matrix"
+    ],
+    "input_costs": {
+      "sintered_ferro_block": 8,
+      "silicate_slurry_matrix": 3
+    },
+    "tool": "laser_scribe_trowel",
+    "discipline": "construction",
+    "level_req": 60,
+    "output_item": "ceramic_pylon_pillar",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_subterranean_bunker",
+    "name": "Subterranean Bunker",
+    "inputs": [
+      "ferro_ceramic_bastion"
+    ],
+    "input_costs": {
+      "ferro_ceramic_bastion": 6
+    },
+    "tool": "laser_scribe_trowel",
+    "discipline": "construction",
+    "level_req": 65,
+    "output_item": "subterranean_bunker",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_orbital_trade_depot",
+    "name": "Orbital Trade Depot",
+    "inputs": [
+      "ferro_ceramic_bastion",
+      "ceramic_pylon_pillar",
+      "sharpened_polymer_pylon"
+    ],
+    "input_costs": {
+      "ferro_ceramic_bastion": 5,
+      "ceramic_pylon_pillar": 2,
+      "sharpened_polymer_pylon": 6
+    },
+    "tool": "laser_scribe_trowel",
+    "discipline": "construction",
+    "level_req": 70,
+    "output_item": "orbital_trade_depot",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_quantum_recombination_pod",
+    "name": "Quantum Recombination Pod",
+    "inputs": [
+      "subterranean_bunker",
+      "reinforced_hab_unit",
+      "modular_outpost_pod"
+    ],
+    "input_costs": {
+      "subterranean_bunker": 1,
+      "reinforced_hab_unit": 1,
+      "modular_outpost_pod": 1
+    },
+    "tool": "magnetic_impact_mallet",
+    "discipline": "construction",
+    "level_req": 75,
+    "output_item": "quantum_recombination_pod",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_blank_data_slate",
+    "name": "Blank Data Slate",
+    "inputs": [
+      "outer_shielding",
+      "carbon_strut"
+    ],
+    "input_costs": {
+      "outer_shielding": 1,
+      "carbon_strut": 4
+    },
+    "tool": "monomolecular_scalpel",
+    "discipline": "engraving",
+    "level_req": 55,
+    "output_item": "blank_data_slate",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_blueprint_minerals",
+    "name": "Blueprint: Minerals",
+    "inputs": [
+      "raw_mineral_chunk",
+      "blank_data_slate"
+    ],
+    "input_costs": {
+      "raw_mineral_chunk": 1,
+      "blank_data_slate": 1
+    },
+    "tool": "chromatic_scribe",
+    "discipline": "engraving",
+    "level_req": 65,
+    "output_item": "blueprint_minerals",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_blueprint_struts",
+    "name": "Blueprint: Struts",
+    "inputs": [
+      "carbon_strut",
+      "blank_data_slate"
+    ],
+    "input_costs": {
+      "carbon_strut": 1,
+      "blank_data_slate": 1
+    },
+    "tool": "chromatic_scribe",
+    "discipline": "engraving",
+    "level_req": 65,
+    "output_item": "blueprint_struts",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_blueprint_bio_tendon",
+    "name": "Blueprint: Bio-Tendon",
+    "inputs": [
+      "polymer_tendon",
+      "blank_data_slate"
+    ],
+    "input_costs": {
+      "polymer_tendon": 1,
+      "blank_data_slate": 1
+    },
+    "tool": "chromatic_scribe",
+    "discipline": "engraving",
+    "level_req": 70,
+    "output_item": "blueprint_bio_tendon",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_blueprint_radiant_ore",
+    "name": "Blueprint: Radiant Ore",
+    "inputs": [
+      "radiant_energy_core",
+      "blank_data_slate"
+    ],
+    "input_costs": {
+      "radiant_energy_core": 1,
+      "blank_data_slate": 1
+    },
+    "tool": "chromatic_scribe",
+    "discipline": "engraving",
+    "level_req": 80,
+    "output_item": "blueprint_radiant_ore",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_peeled_banana",
+    "name": "Peeled Banana Pod",
+    "inputs": [
+      "banana_pod"
+    ],
+    "input_costs": {
+      "banana_pod": 1
+    },
+    "tool": "",
+    "discipline": "mealPrep",
+    "level_req": 0,
+    "output_item": "peeled_banana_pod",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_mono_shard",
+    "name": "Monomolecular Shard",
+    "inputs": [
+      "raw_mineral_chunk"
+    ],
+    "input_costs": {
+      "raw_mineral_chunk": 1
+    },
+    "tool": "heavy_slag_chunk",
+    "discipline": "toolCraft",
+    "level_req": 0,
+    "output_item": "monomolecular_shard",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_banana_wafers",
+    "name": "Diced Banana Wafers",
+    "inputs": [
+      "peeled_banana_pod"
+    ],
+    "input_costs": {
+      "peeled_banana_pod": 1
+    },
+    "tool": "monomolecular_shard",
+    "discipline": "mealPrep",
+    "level_req": 0,
+    "output_item": "diced_banana_wafers",
+    "output_qty": 1
+  },
+  {
+    "id": "recipe_field_container",
+    "name": "Field Nanite Pod",
+    "inputs": [
+      "nano_grid_strips"
+    ],
+    "input_costs": {
+      "nano_grid_strips": 5
+    },
+    "tool": "",
+    "discipline": "woodWork",
+    "level_req": 10,
+    "output_item": "field_nanite_pod",
+    "output_qty": 1
+  }
 ]

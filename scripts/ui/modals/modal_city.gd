@@ -2,11 +2,12 @@ extends VBoxContainer
 ## Full Interactive Colony City Map with Pan & Zoom and Building Construction.
 ## Features:
 ## - 30x30 procedural sector with contiguous connected desert dunes
-## - Zoom controls (1.0x to 3.0x) + smooth mouse/touch dragging
+## - Multi-touch pinch-to-zoom (0.6x to 2.8x) & mouse wheel zoom
+## - Smooth finger drag and mouse drag panning with view centering
 ## - Building placement mode on surveyed terrain
-## - Colony housing, population, and reset options
+## - Colony housing, population, and recombination reset options
 
-const TILE_BASE_SIZE := 48 # 30 * 48 = 1440px full grid when zoom = 1.0
+const TILE_BASE_SIZE := 48 # 30 * 48 = 1440px full grid at 100% zoom
 
 const TILES := {
 	"grass": {
@@ -64,11 +65,22 @@ var _inspect_lbl: Label
 var _reset_btn: Button
 var _armed := false
 
+# Drag & Pinch state
+var _is_mouse_dragging := false
+var _has_dragged := false
+var _drag_distance := 0.0
+var _touch_points: Dictionary = {} # index (int) -> Vector2 (global_position)
+var _initial_touch_distance: float = 0.0
+var _initial_zoom_level: float = 1.0
+
 
 func _ready() -> void:
 	add_theme_constant_override("separation", 14)
+	size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_load_textures()
 	_build_ui()
+	ColonyManager.map_updated.connect(_redraw_map)
+	ColonyManager.run_reset.connect(_redraw_map)
 
 
 func _load_textures() -> void:
@@ -83,7 +95,7 @@ func _build_ui() -> void:
 	add_child(UIRows.heading("NEW AMSTERDAM CITADEL // 30x30 SECTOR"))
 	add_child(UIRows.row("Colony Status", "Population: %d / %d Operatives" % [ColonyManager.population, ColonyManager.housing_capacity], Color("d4af37")))
 
-	# 2. Zoom & Re-seed controls
+	# 2. Zoom controls
 	var controls_row := HBoxContainer.new()
 	controls_row.add_theme_constant_override("separation", 10)
 	add_child(controls_row)
@@ -91,61 +103,54 @@ func _build_ui() -> void:
 	var zoom_out_btn := Button.new()
 	zoom_out_btn.text = "➖ ZOOM OUT"
 	zoom_out_btn.focus_mode = Control.FOCUS_NONE
-	zoom_out_btn.custom_minimum_size = Vector2(170, 50)
+	zoom_out_btn.custom_minimum_size = Vector2(180, 52)
 	zoom_out_btn.add_theme_font_size_override("font_size", 20)
 	zoom_out_btn.pressed.connect(func() -> void: _adjust_zoom(-0.25))
 	controls_row.add_child(zoom_out_btn)
 
+	_status_lbl = Label.new()
+	_status_lbl.text = "Zoom: 100% (Pinch / Drag)"
+	_status_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_status_lbl.add_theme_font_size_override("font_size", 22)
+	_status_lbl.add_theme_color_override("font_color", Color("38bdf8"))
+	controls_row.add_child(_status_lbl)
+
 	var zoom_in_btn := Button.new()
 	zoom_in_btn.text = "➕ ZOOM IN"
 	zoom_in_btn.focus_mode = Control.FOCUS_NONE
-	zoom_in_btn.custom_minimum_size = Vector2(170, 50)
+	zoom_in_btn.custom_minimum_size = Vector2(180, 52)
 	zoom_in_btn.add_theme_font_size_override("font_size", 20)
 	zoom_in_btn.pressed.connect(func() -> void: _adjust_zoom(0.25))
 	controls_row.add_child(zoom_in_btn)
 
-	_status_lbl = Label.new()
-	_status_lbl.text = "Zoom: 100%"
-	_status_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_status_lbl.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	_status_lbl.add_theme_font_size_override("font_size", 22)
-	_status_lbl.add_theme_color_override("font_color", Color("f59e0b"))
-	controls_row.add_child(_status_lbl)
-
-	var reseed_btn := Button.new()
-	reseed_btn.text = "🎲 RE-SEED MAP"
-	reseed_btn.focus_mode = Control.FOCUS_NONE
-	reseed_btn.custom_minimum_size = Vector2(180, 50)
-	reseed_btn.add_theme_font_size_override("font_size", 20)
-	reseed_btn.pressed.connect(func() -> void:
-		ColonyManager.generate_city_map(30)
-		_redraw_map()
-		GameState.toast_requested.emit("Sector re-generated with contiguous desert!")
-	)
-	controls_row.add_child(reseed_btn)
-
-	# 3. Interactive Zoomable Map Viewport
+	# 3. Interactive Zoomable Map Viewport (Maximized height for phone screen)
 	var view_frame := PanelContainer.new()
-	view_frame.custom_minimum_size = Vector2(0, 560)
+	view_frame.custom_minimum_size = Vector2(0, 1420)
 	view_frame.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	view_frame.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	var v_sb := StyleBoxFlat.new()
-	v_sb.bg_color = Color("17110a")
+	v_sb.bg_color = Color("081f33")
 	v_sb.set_border_width_all(4)
-	v_sb.border_color = Color("573315")
-	v_sb.set_corner_radius_all(16)
+	v_sb.border_color = Color("22d3ee")
+	v_sb.set_corner_radius_all(20)
 	v_sb.set_content_margin_all(6)
 	view_frame.add_theme_stylebox_override("panel", v_sb)
-
 	add_child(view_frame)
 
 	_viewport_scroll = ScrollContainer.new()
 	_viewport_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_viewport_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_viewport_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	_viewport_scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
 	view_frame.add_child(_viewport_scroll)
 
 	_map_grid = Control.new()
 	var total_px: float = 30.0 * TILE_BASE_SIZE * _zoom_level
 	_map_grid.custom_minimum_size = Vector2(total_px, total_px)
+	_map_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_map_grid.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_map_grid.mouse_filter = Control.MOUSE_FILTER_STOP
 	_map_grid.draw.connect(_on_map_draw)
 	_map_grid.gui_input.connect(_on_map_gui_input)
 	_viewport_scroll.add_child(_map_grid)
@@ -167,9 +172,8 @@ func _build_ui() -> void:
 		b_btn.pressed.connect(_select_blueprint.bind(i))
 		build_row.add_child(b_btn)
 
-
 	_inspect_lbl = Label.new()
-	_inspect_lbl.text = "Survey Status: Tap any sector tile on the map to inspect terrain or place selected building."
+	_inspect_lbl.text = "Survey Status: Drag finger/mouse to pan. Pinch or buttons to zoom. Tap to inspect or build."
 	_inspect_lbl.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_inspect_lbl.add_theme_font_size_override("font_size", 22)
 	_inspect_lbl.add_theme_color_override("font_color", Color("70ff8b"))
@@ -188,17 +192,36 @@ func _build_ui() -> void:
 
 
 func _adjust_zoom(delta: float) -> void:
-	_zoom_level = clampf(_zoom_level + delta, 0.6, 2.5)
+	_set_zoom(_zoom_level + delta)
+
+
+func _set_zoom(new_val: float) -> void:
+	var old_zoom := _zoom_level
+	_zoom_level = clampf(new_val, 0.6, 2.8)
 	var total_px: float = 30.0 * TILE_BASE_SIZE * _zoom_level
 	_map_grid.custom_minimum_size = Vector2(total_px, total_px)
 	_status_lbl.text = "Zoom: %d%%" % int(_zoom_level * 100.0)
+
+	if _viewport_scroll != null and old_zoom > 0:
+		var ratio := _zoom_level / old_zoom
+		var view_w: float = _viewport_scroll.size.x
+		var view_h: float = _viewport_scroll.size.y
+		if view_w <= 0.0:
+			view_w = 900.0
+		if view_h <= 0.0:
+			view_h = 1400.0
+		var center_x: float = _viewport_scroll.scroll_horizontal + view_w * 0.5
+		var center_y: float = _viewport_scroll.scroll_vertical + view_h * 0.5
+		_viewport_scroll.scroll_horizontal = int(center_x * ratio - view_w * 0.5)
+		_viewport_scroll.scroll_vertical = int(center_y * ratio - view_h * 0.5)
+
 	_redraw_map()
 
 
 func _select_blueprint(idx: int) -> void:
 	if _selected_build_idx == idx:
 		_selected_build_idx = -1
-		_inspect_lbl.text = "Building selection cleared. Mode: Inspect."
+		_inspect_lbl.text = "Building selection cleared. Mode: Inspect & Pan."
 		_inspect_lbl.add_theme_color_override("font_color", Color("bfb7aa"))
 	else:
 		_selected_build_idx = idx
@@ -213,15 +236,15 @@ func _redraw_map() -> void:
 
 
 func _on_map_draw() -> void:
-	var size := ColonyManager.city_map_size
-	if size <= 0 or ColonyManager.city_map_data.is_empty():
+	var map_dim := ColonyManager.city_map_size
+	if map_dim <= 0 or ColonyManager.city_map_data.is_empty():
 		return
 
 	var cell_size: float = TILE_BASE_SIZE * _zoom_level
 
-	for y in size:
-		for x in size:
-			var idx := y * size + x
+	for y in map_dim:
+		for x in map_dim:
+			var idx := y * map_dim + x
 			var t_key: String = ColonyManager.city_map_data[idx]
 			var rect := Rect2(x * cell_size, y * cell_size, cell_size, cell_size)
 
@@ -249,15 +272,85 @@ func _on_map_draw() -> void:
 
 
 func _on_map_gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-		var cell_size: float = TILE_BASE_SIZE * _zoom_level
-		var local_pos: Vector2 = event.position
-		var tx: int = int(local_pos.x / cell_size)
-		var ty: int = int(local_pos.y / cell_size)
-		var size := ColonyManager.city_map_size
+	# 1. Touch screen events (multi-touch pinch & single finger drag)
+	if event is InputEventScreenTouch:
+		if event.pressed:
+			_touch_points[event.index] = global_position
+			if _touch_points.size() == 1:
+				_has_dragged = false
+				_drag_distance = 0.0
+			elif _touch_points.size() >= 2:
+				_has_dragged = true
+				var pts: Array = _touch_points.values()
+				_initial_touch_distance = (pts[0] - pts[1]).length()
+				_initial_zoom_level = _zoom_level
+		else:
+			var released_pos: Vector2 = global_position
+			_touch_points.erase(event.index)
+			if _touch_points.is_empty():
+				if not _has_dragged:
+					_handle_click_at(released_pos)
+		accept_event()
+		return
 
-		if tx >= 0 and tx < size and ty >= 0 and ty < size:
-			_handle_tile_action(tx, ty)
+	if event is InputEventScreenDrag:
+		_touch_points[event.index] = global_position
+		if _touch_points.size() >= 2:
+			var pts: Array = _touch_points.values()
+			var current_dist: float = (pts[0] - pts[1]).length()
+			if _initial_touch_distance > 10.0:
+				var scale_factor: float = current_dist / _initial_touch_distance
+				_set_zoom(_initial_zoom_level * scale_factor)
+			_has_dragged = true
+		elif _touch_points.size() == 1:
+			_viewport_scroll.scroll_horizontal -= int(event.relative.x)
+			_viewport_scroll.scroll_vertical -= int(event.relative.y)
+			_drag_distance += event.relative.length()
+			if _drag_distance > 10.0:
+				_has_dragged = true
+		accept_event()
+		return
+
+	# 2. Mouse events (mouse drag to move & wheel to zoom)
+	if event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP and event.pressed:
+			_adjust_zoom(0.15)
+			accept_event()
+			return
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN and event.pressed:
+			_adjust_zoom(-0.15)
+			accept_event()
+			return
+		elif event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				_is_mouse_dragging = true
+				_has_dragged = false
+				_drag_distance = 0.0
+			else:
+				_is_mouse_dragging = false
+				if not _has_dragged:
+					_handle_click_at(event.global_position)
+			accept_event()
+			return
+
+	if event is InputEventMouseMotion and _is_mouse_dragging:
+		_viewport_scroll.scroll_horizontal -= int(event.relative.x)
+		_viewport_scroll.scroll_vertical -= int(event.relative.y)
+		_drag_distance += event.relative.length()
+		if _drag_distance > 8.0:
+			_has_dragged = true
+		accept_event()
+
+
+func _handle_click_at(global_pos: Vector2) -> void:
+	var local_pos := global_pos - _map_grid.global_position
+	var cell_size: float = TILE_BASE_SIZE * _zoom_level
+	var tx: int = int(local_pos.x / cell_size)
+	var ty: int = int(local_pos.y / cell_size)
+	var map_dim := ColonyManager.city_map_size
+
+	if tx >= 0 and tx < map_dim and ty >= 0 and ty < map_dim:
+		_handle_tile_action(tx, ty)
 
 
 func _handle_tile_action(x: int, y: int) -> void:

@@ -83,17 +83,10 @@ func _init() -> void:
 
 
 func _apply_default_style() -> void:
+	# Prototype frame: dark rim -> glowing cyan border (brighter bottom) -> teal fill -> inner bevel
 	for state in ["normal", "hover", "pressed"]:
-		var sb := StyleBoxFlat.new()
-		# Translucent dark teal/slate module interior matching prototype
-		sb.bg_color = Color("0d354d", 0.88) if state == "normal" else (Color("124c6e", 0.95) if state == "hover" else Color("082436", 1.0))
-		sb.set_border_width_all(4)
-		# Vivid glowing cyan border matching prototype
-		sb.border_color = Color("22d3ee") if state != "pressed" else Color("38bdf8")
-		sb.set_corner_radius_all(16)
-		sb.shadow_color = Color("0284c7", 0.4)
-		sb.shadow_size = 4
-		add_theme_stylebox_override(state, sb)
+		add_theme_stylebox_override(state, UiFrames.slot(state))
+	add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 
 
 
@@ -152,7 +145,8 @@ func set_item(item: Variant) -> void:
 		_icon_label.text = def.get("glyph", "?")
 
 	if def.get("type", "") == "tool":
-		_qty_label.text = ""
+		var qty := int(item.get("qty", 1))
+		_qty_label.text = str(qty) if qty > 1 else ""
 		_dur_bar.visible = true
 		_dur_bar.max_value = float(def.get("max_durability", 1))
 		_dur_bar.value = float(item.get("durability", 0))

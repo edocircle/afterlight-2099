@@ -57,8 +57,18 @@ func _on_craft_success(result_id: String) -> void:
 	if is_finished():
 		return
 	var q := current()
-	if q["type"] == "craft" and q["target"] == result_id:
-		_advance()
+	if q["type"] == "craft":
+		var tgt: String = String(q["target"])
+		if tgt == result_id:
+			_advance()
+		elif (tgt == "peeled_banana" or tgt == "peeled_banana_pod") and (result_id == "peeled_banana" or result_id == "peeled_banana_pod"):
+			_advance()
+		elif (tgt == "mono_shard" or tgt == "monomolecular_shard") and (result_id == "mono_shard" or result_id == "monomolecular_shard"):
+			_advance()
+		elif (tgt == "banana_wafers" or tgt == "diced_banana_wafers") and (result_id == "banana_wafers" or result_id == "diced_banana_wafers"):
+			_advance()
+		elif (tgt == "field_container" or tgt == "field_nanite_pod") and (result_id == "field_container" or result_id == "field_nanite_pod"):
+			_advance()
 
 
 func _on_scavenge_completed(_item_id: String) -> void:

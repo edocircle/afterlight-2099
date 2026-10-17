@@ -7,7 +7,7 @@ signal modal_requested(kind: String)
 const BUTTONS := [
 	["🧠", "SKILLS", "protag_skills"],
 	["🎒", "P-BAG", "protag_bag"],
-	["🏛️", "CITY", "city"],
+	["", "", ""],
 	["⚙️", "M-SKILL", "minion_skills"],
 	["💼", "M-BAG", "minion_bag"],
 ]
@@ -16,15 +16,24 @@ const BUTTONS := [
 func _ready() -> void:
 	add_theme_constant_override("separation", 16)
 	alignment = BoxContainer.ALIGNMENT_CENTER
+	resized.connect(queue_redraw)
 
 	for def in BUTTONS:
+		if def[1] == "":
+			var spacer := Control.new()
+			spacer.custom_minimum_size = Vector2(170, 170)
+			spacer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+			spacer.mouse_filter = Control.MOUSE_FILTER_IGNORE
+			add_child(spacer)
+			continue
+
 		var btn := Button.new()
 		btn.focus_mode = Control.FOCUS_NONE
 		btn.custom_minimum_size = Vector2(170, 170)
 		btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		btn.add_theme_stylebox_override("normal", _circle_box(Color("164e63", 0.85), Color("38bdf8")))
-		btn.add_theme_stylebox_override("hover", _circle_box(Color("0e7490", 0.95), Color("7dd3fc")))
-		btn.add_theme_stylebox_override("pressed", _circle_box(Color("155e75", 1.0), Color("0284c7")))
+		for state in ["normal", "hover", "pressed"]:
+			btn.add_theme_stylebox_override(state, UiFrames.circle_button(state))
+		btn.add_theme_stylebox_override("focus", StyleBoxEmpty.new())
 
 		var v := VBoxContainer.new()
 		v.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -54,14 +63,9 @@ func _ready() -> void:
 		add_child(btn)
 
 
-func _circle_box(fill: Color, border: Color) -> StyleBoxFlat:
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = fill
-	sb.set_border_width_all(5)
-	sb.border_color = border
-	sb.set_corner_radius_all(85)
-	sb.shadow_color = Color("0284c7", 0.45)
-	sb.shadow_size = 8
-	return sb
+func _draw() -> void:
+	# Steel pipe behind the round buttons (children draw on top of this).
+	var h := 36.0
+	draw_style_box(UiFrames.pipe(), Rect2(30.0, size.y * 0.5 - h * 0.5, maxf(0.0, size.x - 60.0), h))
 
 

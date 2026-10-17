@@ -5,6 +5,8 @@ extends Node
 
 signal scavenge_completed(item_id: String)
 signal run_state_changed
+signal scavenge_started(duration: float, is_depleted: bool)
+signal scavenge_finished(item_id: String)
 
 const POOL_PATH := "res://data/scavenge_pool.json"
 const DISCOVERY_PATH := "res://data/minion_discovery_index.json"
@@ -14,14 +16,28 @@ const MAX_ACCURACY := 0.95
 const ACCURACY_PER_COMM := 0.012 # 1.2% per communication point
 const RUN_SECONDS := 60.0 # placeholder run duration
 const POD_SLOT := "cargo_pod"
+const NORMAL_SCAVENGE_TIME := 1.0
+const BASE_DEPLETED_SCAVENGE_TIME := 6.0 # Drastically slower speed when depleted, scales exponentially
 
 var pool: Array = []
 var discovery_index: Dictionary = {}
 var cargo_pod: Variant = null # equipped pod item dict or null
 var run_end_unix: float = 0.0 # 0 = no run in progress; otherwise unix time the run finishes
+var is_scavenging: bool = false
+var scavenge_end_unix: float = 0.0
+var scavenge_duration: float = 0.0
+var scavenge_depleted: bool = false
+var depleted_streak: int = 0
+var _scavenge_timer: Timer
 
 
 func _ready() -> void:
+	_scavenge_timer = Timer.new()
+	_scavenge_timer.one_shot = true
+	_scavenge_timer.timeout.connect(_on_manual_scavenge_complete)
+	add_child(_scavenge_timer)
+	GameState.energy_updated.connect(_on_energy_updated)
+
 	var f := FileAccess.open(POOL_PATH, FileAccess.READ)
 	if f != null:
 		var parsed: Variant = JSON.parse_string(f.get_as_text())
@@ -32,6 +48,11 @@ func _ready() -> void:
 		var d_parsed: Variant = JSON.parse_string(df.get_as_text())
 		if d_parsed is Dictionary:
 			discovery_index = d_parsed
+
+
+func _on_energy_updated(target: String, val: float, _max_val: float) -> void:
+	if target == "minion" and val >= ENERGY_COST:
+		depleted_streak = 0
 
 
 func get_accuracy() -> float:
@@ -151,25 +172,60 @@ func interact() -> void:
 ## --- Manual tether (early phase) ---
 
 func scavenge() -> bool:
+	if is_scavenging:
+		var left := maxi(1, int(ceil(scavenge_end_unix - Time.get_unix_time_from_system())))
+		GameState.toast_requested.emit("Drone is scavenging in Citadel... %ds remaining" % left)
+		return false
+
 	if pool.is_empty():
 		return false
+
+	if not InventoryManager.can_add("raw_mineral_chunk"):
+		GameState.toast_requested.emit("Cargo full! No free slots.")
+		return false
+
+	var has_energy := GameState.minion_energy >= ENERGY_COST
+	if has_energy:
+		GameState.consume_energy("minion", ENERGY_COST)
+		depleted_streak = 0
+		scavenge_depleted = false
+		scavenge_duration = NORMAL_SCAVENGE_TIME
+		GameState.toast_requested.emit("Drone scouting Citadel (%.1fs)..." % scavenge_duration)
+	else:
+		# Energy depleted: still able to search, but drastically slower exponentially!
+		depleted_streak += 1
+		scavenge_depleted = true
+		scavenge_duration = minf(40.0, BASE_DEPLETED_SCAVENGE_TIME * pow(1.5, depleted_streak - 1))
+		GameState.toast_requested.emit("Drone depleted! Searching exponentially slower (%.1fs)..." % scavenge_duration)
+
+	is_scavenging = true
+	scavenge_end_unix = Time.get_unix_time_from_system() + scavenge_duration
+	_scavenge_timer.start(scavenge_duration)
+	scavenge_started.emit(scavenge_duration, scavenge_depleted)
+	run_state_changed.emit()
+	return true
+
+
+func _on_manual_scavenge_complete() -> void:
+	is_scavenging = false
 	var roll := _roll_item()
 	var item_id: String = roll["id"]
 	var disc: String = roll["discipline"]
-	if not InventoryManager.can_add(item_id):
-		GameState.toast_requested.emit("Cargo full! No free slots.")
-		return false
-	if not GameState.consume_energy("minion", ENERGY_COST):
-		GameState.toast_requested.emit("Drone energy depleted! Feed food.")
-		return false
 
-	InventoryManager.add_item(InventoryManager.make_item(item_id))
-	_grant_xp(disc)
-
-	var item_name: String = InventoryManager.get_def(item_id).get("name", item_id)
-	GameState.toast_requested.emit("Drone scavenged: %s!" % item_name)
-	scavenge_completed.emit(item_id)
-	return true
+	if InventoryManager.can_add(item_id):
+		InventoryManager.add_item(InventoryManager.make_item(item_id))
+		_grant_xp(disc)
+		var item_name: String = InventoryManager.get_def(item_id).get("name", item_id)
+		if scavenge_depleted:
+			GameState.toast_requested.emit("Drone returned from slow search with: %s!" % item_name)
+		else:
+			GameState.toast_requested.emit("Drone scavenged: %s!" % item_name)
+		scavenge_completed.emit(item_id)
+		scavenge_finished.emit(item_id)
+	else:
+		GameState.toast_requested.emit("Cargo full! Item lost.")
+		scavenge_finished.emit("")
+	run_state_changed.emit()
 
 
 ## --- Cargo pod ---
@@ -214,8 +270,15 @@ func run_seconds_left() -> int:
 
 
 func status_text() -> String:
+	if is_scavenging:
+		var left := maxi(1, int(ceil(scavenge_end_unix - Time.get_unix_time_from_system())))
+		if scavenge_depleted:
+			return "LOW PWR (%ds)" % left
+		return "SCOUT (%ds)" % left
 	if cargo_pod == null:
-		return ""
+		if GameState.minion_energy < ENERGY_COST:
+			return "LOW ENERGY (SLOW)"
+		return "SCAVENGER"
 	match run_state():
 		"running":
 			return "RUN %s" % _fmt(run_seconds_left())

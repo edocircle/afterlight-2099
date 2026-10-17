@@ -62,14 +62,23 @@ func _add_recipe_row(recipe: Dictionary, eff_skill: float) -> void:
 
 	var r_name: String = recipe.get("name", recipe["id"])
 	var inputs: Array = recipe.get("inputs", [])
+	var input_costs: Dictionary = recipe.get("input_costs", {})
 	var tool_id: String = recipe.get("tool", "")
+	var out_qty: int = int(recipe.get("output_qty", 1))
 
 	var mat_names: PackedStringArray = []
 	for in_id in inputs:
-		mat_names.append(InventoryManager.get_def(in_id).get("name", in_id))
+		var cost: int = int(input_costs.get(in_id, 1))
+		var in_name: String = InventoryManager.get_def(in_id).get("name", in_id)
+		if cost > 1:
+			mat_names.append("%dx %s" % [cost, in_name])
+		else:
+			mat_names.append(in_name)
+
 	if tool_id != "":
 		mat_names.append("Tool: %s" % InventoryManager.get_def(tool_id).get("name", tool_id))
 
-	var details := "Req: Lv %.0f | %s\nInputs: %s" % [req, tag, ", ".join(mat_names)]
+	var yield_str := " (Yields %dx)" % out_qty if out_qty > 1 else ""
+	var details := "Req: Lv %.0f | %s%s\nInputs: %s" % [req, tag, yield_str, ", ".join(mat_names)]
 	var row := UIRows.row(r_name, details, color)
 	add_child(row)

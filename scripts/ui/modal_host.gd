@@ -15,6 +15,7 @@ const MODALS := {
 }
 
 var _title: Label
+var _dialog: PanelContainer
 var _scroll: ScrollContainer
 var _content: Control
 
@@ -37,20 +38,20 @@ func _ready() -> void:
 	center.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	add_child(center)
 
-	var dialog := PanelContainer.new()
-	dialog.custom_minimum_size = Vector2(1000, 0)
+	_dialog = PanelContainer.new()
+	_dialog.custom_minimum_size = Vector2(1000, 0)
 	var sb := StyleBoxFlat.new()
 	sb.bg_color = Color("051221")
 	sb.set_border_width_all(4)
 	sb.border_color = Color("00e5ff")
 	sb.set_corner_radius_all(24)
 	sb.set_content_margin_all(28)
-	dialog.add_theme_stylebox_override("panel", sb)
-	center.add_child(dialog)
+	_dialog.add_theme_stylebox_override("panel", sb)
+	center.add_child(_dialog)
 
 	var col := VBoxContainer.new()
 	col.add_theme_constant_override("separation", 16)
-	dialog.add_child(col)
+	_dialog.add_child(col)
 
 	var head := HBoxContainer.new()
 	col.add_child(head)
@@ -71,10 +72,10 @@ func _ready() -> void:
 	close_btn.pressed.connect(close)
 	head.add_child(close_btn)
 
-
 	_scroll = ScrollContainer.new()
 	_scroll.custom_minimum_size = Vector2(888, 1200)
 	_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	col.add_child(_scroll)
 
@@ -87,11 +88,23 @@ func open(kind: String) -> void:
 	_clear_content()
 	var def: Dictionary = MODALS[kind]
 	_title.text = def["title"]
+
+	if kind == "city":
+		# Maximize modal height for phone screen viewport
+		_dialog.custom_minimum_size = Vector2(1000, 2260)
+		_scroll.custom_minimum_size = Vector2(944, 2100)
+		_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	else:
+		_dialog.custom_minimum_size = Vector2(1000, 0)
+		_scroll.custom_minimum_size = Vector2(888, 1200)
+
 	_content = VBoxContainer.new()
 	_content.set_script(load(def["script"]))
 	_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_content.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	_scroll.add_child(_content)
 	visible = true
+
 
 
 func close() -> void:

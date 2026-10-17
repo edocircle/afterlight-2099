@@ -33,19 +33,11 @@ func refresh() -> void:
 		_views[i].set_item(InventoryManager.get_slot(i))
 		if InventoryManager.is_container(i):
 			var open := i == InventoryManager.active_container_index
-			_views[i].add_theme_stylebox_override("normal", _container_box(open))
+			var accent := UiFrames.GOLD if open else UiFrames.CYAN
+			for state in ["normal", "hover", "pressed"]:
+				_views[i].add_theme_stylebox_override(state, UiFrames.slot(state, accent))
 		else:
 			_views[i]._apply_default_style()
-
-
-
-func _container_box(open: bool) -> StyleBoxFlat:
-	var sb := StyleBoxFlat.new()
-	sb.bg_color = Color("0d3356") if open else Color("09233b")
-	sb.set_border_width_all(4)
-	sb.border_color = Color("00e5ff") if open else Color("0091ea")
-	sb.set_corner_radius_all(16)
-	return sb
 
 
 

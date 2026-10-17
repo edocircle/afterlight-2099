@@ -13,13 +13,12 @@ func _ready() -> void:
 
 
 func _load_backdrop() -> void:
-	var path := "res://assets/sprites/underwater_bg.png"
-	var global_p := ProjectSettings.globalize_path(path)
-	if FileAccess.file_exists(global_p):
-		var img := Image.new()
-		var err := img.load(global_p)
-		if err == OK:
-			_water_backdrop.texture = ImageTexture.create_from_image(img)
+	if _water_backdrop.texture == null:
+		var path := "res://assets/sprites/underwater_bg.png"
+		if ResourceLoader.exists(path):
+			_water_backdrop.texture = load(path)
+		elif ResourceLoader.exists("res://assets/sprites/underwater_bg.jpg"):
+			_water_backdrop.texture = load("res://assets/sprites/underwater_bg.jpg")
 
 
 

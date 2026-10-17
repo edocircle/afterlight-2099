@@ -26,6 +26,7 @@ var skills := {
 	"tailoring": 1.1,
 	"pottery": 6.7,
 	"construction": 0.0,
+	"engraving": 0.0,
 }
 
 # Sub-progress tracking towards next +0.1 increment: discipline -> crafts completed

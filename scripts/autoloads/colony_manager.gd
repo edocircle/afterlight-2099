@@ -3,6 +3,7 @@ extends Node
 ## Passive generation and GP rewards are NOT implemented yet; reset is a placeholder until rules are defined.
 
 signal run_reset
+signal map_updated
 
 const BUILDINGS_PATH := "res://data/colony_buildings.json"
 
@@ -113,6 +114,8 @@ func generate_city_map(size: int = 30) -> void:
 			if current != "deep_water" and current != "shallow_water":
 				city_map_data[py * size + px] = "mountain"
 
+	map_updated.emit()
+
 
 func get_tile(x: int, y: int) -> String:
 	if x < 0 or x >= city_map_size or y < 0 or y >= city_map_size:
@@ -140,7 +143,7 @@ func place_building(x: int, y: int, building_id: String, building_name: String, 
 		"x": x,
 		"y": y
 	}
-	run_reset.emit()
+	map_updated.emit()
 	return true
 
 
