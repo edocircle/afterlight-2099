@@ -70,13 +70,17 @@ func _build_ui() -> void:
 	_header_lbl.text = "COLONY CITADEL (30x30)"
 	_header_lbl.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_header_lbl.add_theme_font_size_override("font_size", 22)
-	_header_lbl.add_theme_color_override("font_color", Color("e0f2fe"))
+	_header_lbl.add_theme_color_override("font_color", Color("fef08a")) # Warm high-contrast amber
+	_header_lbl.add_theme_color_override("font_outline_color", Color(0.02, 0.08, 0.14, 0.95))
+	_header_lbl.add_theme_constant_override("outline_size", 6)
 	head_row.add_child(_header_lbl)
 
 	_pop_lbl = Label.new()
 	_pop_lbl.text = "Pop: %d/%d" % [ColonyManager.population, ColonyManager.housing_capacity]
 	_pop_lbl.add_theme_font_size_override("font_size", 20)
-	_pop_lbl.add_theme_color_override("font_color", Color("38bdf8"))
+	_pop_lbl.add_theme_color_override("font_color", Color("67e8f9")) # Bright cyan
+	_pop_lbl.add_theme_color_override("font_outline_color", Color(0.02, 0.08, 0.14, 0.95))
+	_pop_lbl.add_theme_constant_override("outline_size", 6)
 	head_row.add_child(_pop_lbl)
 
 	var open_btn := Button.new()

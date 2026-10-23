@@ -1,0 +1,20 @@
+debug_src bytes: 4304948, err: 0, size: 2048x2048
+closing_eyes: sub_nz=1372, cl_nz=1417
+SUCCESS: res://assets/sprites/characters/pete_closing_eyes.png
+thinking: sub_nz=1417, cl_nz=1460
+SUCCESS: res://assets/sprites/characters/pete_thinking.png
+master_crafting: sub_nz=1450, cl_nz=1526
+SUCCESS: res://assets/sprites/characters/pete_master_crafting.png
+starting_tired: sub_nz=1363, cl_nz=1402
+SUCCESS: res://assets/sprites/characters/pete_starting_tired.png
+exhausted: sub_nz=1645, cl_nz=1695
+SUCCESS: res://assets/sprites/characters/pete_exhausted.png
+eating_happily: sub_nz=1553, cl_nz=1600
+SUCCESS: res://assets/sprites/characters/pete_eating_happily.png
+curious: sub_nz=1976, cl_nz=2030
+SUCCESS: res://assets/sprites/characters/pete_curious.png
+eating: sub_nz=1269, cl_nz=1318
+SUCCESS: res://assets/sprites/characters/pete_eating.png
+joyful_crafter: sub_nz=1754, cl_nz=1807
+SUCCESS: res://assets/sprites/characters/pete_joyful_crafter.png
+ALL_EXTRACTION_COMPLETED_SUCCESSFULLY

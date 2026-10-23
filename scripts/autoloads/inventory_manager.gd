@@ -5,6 +5,7 @@ signal slot_clicked(index: int)
 signal container_opened(slot_index: int)
 signal container_closed
 signal container_changed
+signal food_consumed(target: String, amount: float)
 
 const SLOT_COUNT := 20
 const ITEMS_PATH := "res://data/items.json"
@@ -115,6 +116,21 @@ func is_container(index: int) -> bool:
 
 
 func click_slot(index: int) -> void:
+	# If a container (Grandma's box / bag) is currently open:
+	if active_container_index != -1:
+		if index == active_container_index:
+			# Clicking the active container itself closes it
+			close_container()
+			return
+		elif is_container(index):
+			# Clicking another container switches to it
+			toggle_container(index)
+			return
+		else:
+			# Clicking any inventory item moves it into the open container!
+			put_into_container(index)
+			return
+
 	# Containers open the drawer instead of going to the crafting bench.
 	if is_container(index):
 		toggle_container(index)
@@ -142,7 +158,7 @@ func get_active_container() -> Variant:
 
 
 func extract_from_container(content_index: int) -> bool:
-	## One-tap extraction of a whole stack into the main inventory.
+	## 1-by-1 extraction from container into the main inventory on tap/click.
 	var container: Variant = get_active_container()
 	if container == null:
 		return false
@@ -150,13 +166,164 @@ func extract_from_container(content_index: int) -> bool:
 	if content_index < 0 or content_index >= contents.size() or contents[content_index] == null:
 		return false
 	var item: Dictionary = contents[content_index]
-	if not can_add(item["id"], int(item["qty"])):
+	if not can_add(item["id"], 1):
 		GameState.toast_requested.emit("Cargo full! No free slots.")
 		return false
-	add_item(item)
-	contents[content_index] = null
+
+	var one: Dictionary = item.duplicate(true)
+	one["qty"] = 1
+	if not add_item(one):
+		GameState.toast_requested.emit("Cargo full! No free slots.")
+		return false
+
+	var max_stack := get_max_stack(item)
+	if max_stack > 1 and int(item.get("qty", 1)) > 1:
+		item["qty"] = int(item["qty"]) - 1
+	else:
+		contents[content_index] = null
+
 	container_changed.emit()
 	return true
+
+
+func drop_container_item_to_inventory_slot(inv_index: int, content_index: int) -> bool:
+	## Drag-and-drop from container to a specific inventory slot (moves whole quantity).
+	var container: Variant = get_active_container()
+	if container == null:
+		return false
+	var contents: Array = container["contents"]
+	if content_index < 0 or content_index >= contents.size() or contents[content_index] == null:
+		return false
+	if inv_index < 0 or inv_index >= SLOT_COUNT:
+		return false
+
+	var item: Dictionary = contents[content_index]
+	var max_stack := get_max_stack(item)
+	var target_slot: Variant = slots[inv_index]
+
+	if target_slot == null:
+		slots[inv_index] = item.duplicate(true)
+		contents[content_index] = null
+		inventory_changed.emit()
+		container_changed.emit()
+		return true
+	elif can_items_stack(target_slot, item):
+		var to_add: int = mini(max_stack - int(target_slot["qty"]), int(item["qty"]))
+		if to_add > 0:
+			target_slot["qty"] = int(target_slot["qty"]) + to_add
+			item["qty"] = int(item["qty"]) - to_add
+			if int(item["qty"]) <= 0:
+				contents[content_index] = null
+			inventory_changed.emit()
+			container_changed.emit()
+			return true
+		else:
+			GameState.toast_requested.emit("Inventory slot is at maximum stack.")
+			return false
+	else:
+		# Swap items between inventory slot and container slot if types differ
+		if get_def(target_slot["id"]).get("type", "") == "container":
+			GameState.toast_requested.emit("Cannot put a container inside another container!")
+			return false
+		var temp: Dictionary = target_slot.duplicate(true)
+		slots[inv_index] = item.duplicate(true)
+		contents[content_index] = temp
+		inventory_changed.emit()
+		container_changed.emit()
+		return true
+
+
+func put_into_container(inv_index: int) -> bool:
+	## Transfers exactly 1 unit of item from inventory slot into active container (1-by-1 on click).
+	## Matches crafting slot behavior. Stacks into existing slot first, or enters first empty slot.
+	var container: Variant = get_active_container()
+	if container == null:
+		return false
+	var item: Variant = get_slot(inv_index)
+	if item == null:
+		return false
+	if is_container(inv_index):
+		GameState.toast_requested.emit("Cannot put a container inside another container!")
+		return false
+
+	var contents: Array = container["contents"]
+	var max_stack := get_max_stack(item)
+
+	# 1. Try adding 1 unit into an existing stack of the same item
+	if max_stack > 1:
+		for i in contents.size():
+			var c: Variant = contents[i]
+			if c != null and can_items_stack(c, item):
+				var current_qty := int(c["qty"])
+				if current_qty < max_stack:
+					var one: Variant = take_one(inv_index)
+					if one != null:
+						c["qty"] = current_qty + 1
+						container_changed.emit()
+						return true
+				else:
+					GameState.toast_requested.emit("Container slot has reached maximum stack of %d." % max_stack)
+					return false
+
+	# 2. Otherwise place 1 unit into the first empty slot
+	for i in contents.size():
+		if contents[i] == null:
+			var one: Variant = take_one(inv_index)
+			if one != null:
+				contents[i] = one
+				container_changed.emit()
+				return true
+
+	GameState.toast_requested.emit("Container is full! No free slots.")
+	return false
+
+
+func drop_into_container_slot(content_index: int, inv_index: int) -> bool:
+	## Drag-and-drop targeting a specific slot inside the container.
+	var container: Variant = get_active_container()
+	if container == null:
+		return false
+	var item: Variant = get_slot(inv_index)
+	if item == null:
+		return false
+	if is_container(inv_index):
+		GameState.toast_requested.emit("Cannot put a container inside another container!")
+		return false
+
+	var contents: Array = container["contents"]
+	if content_index < 0 or content_index >= contents.size():
+		return false
+
+	var max_stack := get_max_stack(item)
+	var target_slot: Variant = contents[content_index]
+
+	if target_slot == null:
+		contents[content_index] = item.duplicate(true)
+		slots[inv_index] = null
+		inventory_changed.emit()
+		container_changed.emit()
+		return true
+	elif can_items_stack(target_slot, item):
+		var to_add: int = mini(max_stack - int(target_slot["qty"]), int(item["qty"]))
+		if to_add > 0:
+			target_slot["qty"] = int(target_slot["qty"]) + to_add
+			item["qty"] = int(item["qty"]) - to_add
+			if int(item["qty"]) <= 0:
+				slots[inv_index] = null
+			inventory_changed.emit()
+			container_changed.emit()
+			return true
+		else:
+			GameState.toast_requested.emit("Container slot is at maximum stack.")
+			return false
+	else:
+		# Swap items between inventory slot and container slot if types differ
+		var temp: Dictionary = target_slot.duplicate(true)
+		contents[content_index] = item.duplicate(true)
+		slots[inv_index] = temp
+		inventory_changed.emit()
+		container_changed.emit()
+		return true
 
 
 func take_one(index: int) -> Variant:
@@ -269,6 +436,7 @@ func consume_food(target: String) -> bool:
 		if consumed > 0:
 			var total_energy: float = float(consumed) * energy_per_item
 			GameState.replenish_energy(target, total_energy)
+			food_consumed.emit(target, total_energy)
 			s["qty"] = int(s["qty"]) - consumed
 			if int(s["qty"]) <= 0:
 				slots[i] = null
@@ -323,6 +491,7 @@ func feed_slot_to_target(slot_index: int, target: String) -> bool:
 
 	var total_energy: float = float(consumed) * energy_per_item
 	GameState.replenish_energy(target, total_energy)
+	food_consumed.emit(target, total_energy)
 	s["qty"] = int(s["qty"]) - consumed
 	if int(s["qty"]) <= 0:
 		slots[slot_index] = null

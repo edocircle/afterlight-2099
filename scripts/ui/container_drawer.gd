@@ -12,9 +12,9 @@ var _views: Array[SlotView] = []
 
 func _ready() -> void:
 	visible = false
-	# Position as overlay starting below TopActionBar (approx 174px down), covering Character Trio and Mini Map
-	offset_top = 174
-	offset_bottom = 1200
+	# Position as overlay starting directly above the crafting slab (around Y: 650 to 1420), covering Crafting Slab
+	offset_top = 650
+	offset_bottom = 1420
 	size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
@@ -29,7 +29,9 @@ func _ready() -> void:
 	_title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	_title.add_theme_font_size_override("font_size", 36)
-	_title.add_theme_color_override("font_color", Color("e0f7fa"))
+	_title.add_theme_color_override("font_color", Color("fef08a")) # High-contrast warm gold
+	_title.add_theme_color_override("font_outline_color", Color(0.02, 0.08, 0.14, 0.95))
+	_title.add_theme_constant_override("outline_size", 6)
 	head.add_child(_title)
 
 	var close := Button.new()
@@ -67,9 +69,26 @@ func _on_opened(_slot_index: int) -> void:
 	_views.clear()
 	for i in container["contents"].size():
 		var view: SlotView = ITEM_SLOT.instantiate()
+		view.container_slot_index = i
 		view.pressed.connect(InventoryManager.extract_from_container.bind(i))
 		_grid.add_child(view)
 		_views.append(view)
+
+	# Position the drawer lower so its bottom covers the Crafting Slab
+	var slab: Control = get_tree().root.find_child("CraftingSlab", true, false) as Control
+	if slab != null:
+		var slab_rect := slab.get_global_rect()
+		offset_left = slab_rect.position.x
+		offset_right = slab_rect.end.x
+		offset_bottom = slab_rect.end.y
+		# Allow container to sit directly covering the slab
+		offset_top = slab_rect.end.y - (1050 if container["contents"].size() > 10 else 600)
+	else:
+		offset_left = 40
+		offset_right = 1040
+		offset_top = 460
+		offset_bottom = 1520
+
 	visible = true
 	refresh()
 

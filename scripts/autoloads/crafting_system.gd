@@ -4,6 +4,7 @@ extends Node
 signal bench_updated
 signal message(text: String)
 signal craft_success(result_id: String)
+signal craft_attempted
 
 const RECIPES_PATH := "res://data/recipes.json"
 const ENERGY_COST := 2.0
@@ -176,18 +177,73 @@ func drop_item_to_tool_slot(inv_index: int) -> bool:
 
 
 func return_input(slot_idx: int) -> void:
+	## 1-by-1 return from crafting slot to inventory on click/tap.
 	var item: Variant = bench_inputs[slot_idx]
 	if item == null:
 		return
-	# Return the item stack to inventory
-	if InventoryManager.add_item(item):
-		bench_inputs[slot_idx] = null
-		evaluate_bench()
-	else:
+	if not InventoryManager.can_add(item["id"], 1):
 		message.emit("Cargo full! No free slots.")
+		return
+
+	var one: Dictionary = item.duplicate(true)
+	one["qty"] = 1
+	if not InventoryManager.add_item(one):
+		message.emit("Cargo full! No free slots.")
+		return
+
+	var current_qty := int(item.get("qty", 1))
+	if current_qty > 1:
+		item["qty"] = current_qty - 1
+	else:
+		bench_inputs[slot_idx] = null
+	evaluate_bench()
+
+
+func drop_bench_input_to_inventory_slot(inv_index: int, bench_slot_idx: int) -> bool:
+	## Drag-and-drop from crafting input slot to inventory slot (moves whole quantity).
+	if bench_slot_idx < 0 or bench_slot_idx >= INPUT_COUNT or bench_inputs[bench_slot_idx] == null:
+		return false
+	if inv_index < 0 or inv_index >= InventoryManager.SLOT_COUNT:
+		return false
+
+	var item: Dictionary = bench_inputs[bench_slot_idx]
+	var max_stack := InventoryManager.get_max_stack(item)
+	var target_slot: Variant = InventoryManager.slots[inv_index]
+
+	if target_slot == null:
+		InventoryManager.slots[inv_index] = item.duplicate(true)
+		bench_inputs[bench_slot_idx] = null
+		InventoryManager.inventory_changed.emit()
+		evaluate_bench()
+		return true
+	elif InventoryManager.can_items_stack(target_slot, item):
+		var to_add: int = mini(max_stack - int(target_slot["qty"]), int(item["qty"]))
+		if to_add > 0:
+			target_slot["qty"] = int(target_slot["qty"]) + to_add
+			item["qty"] = int(item["qty"]) - to_add
+			if int(item["qty"]) <= 0:
+				bench_inputs[bench_slot_idx] = null
+			InventoryManager.inventory_changed.emit()
+			evaluate_bench()
+			return true
+		else:
+			message.emit("Inventory slot is at maximum stack.")
+			return false
+	else:
+		# Swap items if target is not a container
+		if InventoryManager.get_def(target_slot["id"]).get("type", "") == "container":
+			message.emit("Containers cannot be placed in crafting slots.")
+			return false
+		var temp: Dictionary = target_slot.duplicate(true)
+		InventoryManager.slots[inv_index] = item.duplicate(true)
+		bench_inputs[bench_slot_idx] = temp
+		InventoryManager.inventory_changed.emit()
+		evaluate_bench()
+		return true
 
 
 func return_tool() -> void:
+	## Return tool to inventory on click.
 	if bench_tool == null:
 		return
 	if InventoryManager.add_item(bench_tool):
@@ -195,6 +251,34 @@ func return_tool() -> void:
 		evaluate_bench()
 	else:
 		message.emit("Cargo full! No free slots.")
+
+
+func drop_bench_tool_to_inventory_slot(inv_index: int) -> bool:
+	## Drag-and-drop tool from bench tool slot to inventory slot.
+	if bench_tool == null:
+		return false
+	if inv_index < 0 or inv_index >= InventoryManager.SLOT_COUNT:
+		return false
+
+	var target_slot: Variant = InventoryManager.slots[inv_index]
+	if target_slot == null:
+		InventoryManager.slots[inv_index] = bench_tool.duplicate(true)
+		bench_tool = null
+		InventoryManager.inventory_changed.emit()
+		evaluate_bench()
+		return true
+	elif InventoryManager.can_items_stack(target_slot, bench_tool):
+		var max_stack := InventoryManager.get_max_stack(bench_tool)
+		var to_add: int = mini(max_stack - int(target_slot["qty"]), int(bench_tool.get("qty", 1)))
+		if to_add > 0:
+			target_slot["qty"] = int(target_slot["qty"]) + to_add
+			bench_tool["qty"] = int(bench_tool.get("qty", 1)) - to_add
+			if int(bench_tool["qty"]) <= 0:
+				bench_tool = null
+			InventoryManager.inventory_changed.emit()
+			evaluate_bench()
+			return true
+	return false
 
 
 func _refill_input_slot(slot_idx: int, item_id: String, target_qty: int) -> void:
@@ -300,6 +384,7 @@ func get_active_success_chance() -> float:
 
 
 func craft_active_recipe() -> bool:
+	craft_attempted.emit()
 	if active_match.is_empty():
 		return false
 

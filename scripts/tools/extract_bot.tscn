@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dyvlwu4yqesv1"]
+
+[ext_resource type="Script" path="res://scripts/tools/extract_bot.gd" id="1_extract"]
+
+[node name="ExtractBot" type="Node"]
+script = ExtResource("1_extract")

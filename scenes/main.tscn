@@ -74,9 +74,8 @@ layout_mode = 2
 [node name="InventoryWrapper" parent="Margin/AppContainer" unique_id=998341994 instance=ExtResource("1_inv")]
 layout_mode = 2
 
-[node name="UpperContainerDrawer" parent="Margin" unique_id=1901125101 instance=ExtResource("5_drawer")]
-layout_mode = 2
-size_flags_vertical = 0
+[node name="UpperContainerDrawer" parent="." unique_id=1901125101 instance=ExtResource("5_drawer")]
+layout_mode = 0
 
 [node name="ModalHost" parent="." unique_id=369327691 instance=ExtResource("8_host")]
 layout_mode = 1

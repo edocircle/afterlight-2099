@@ -93,35 +93,104 @@ func _apply_default_style() -> void:
 
 var bench_input_slot_index: int = -1
 var is_bench_tool_slot: bool = false
+var container_slot_index: int = -1
 
 
 func _can_drop_data(_at_position: Vector2, data: Variant) -> bool:
-	if not (data is Dictionary) or data.get("source") != "inventory":
+	if not (data is Dictionary):
 		return false
+	var source: String = data.get("source", "")
 	var item: Variant = data.get("item")
 	if item == null or not (item is Dictionary):
 		return false
 	var def := InventoryManager.get_def(item.get("id", ""))
 	var type: String = def.get("type", "")
 
+	# Case 1: Target is an inventory slot (slot_index >= 0)
+	if slot_index >= 0:
+		if source == "inventory":
+			return true # Internal inventory slot swap/reorder/stack
+		elif source == "container":
+			return true # Drag from container to inventory
+		elif source == "bench_input" or source == "bench_tool":
+			return true # Drag from crafting bench back to inventory
+		return false
+
+	# Case 2: Target is a container slot (container_slot_index >= 0)
+	if container_slot_index >= 0:
+		return source == "inventory" and type != "container"
+
+	# Case 3: Target is bench tool slot
 	if is_bench_tool_slot:
-		return type == "tool"
-	elif bench_input_slot_index >= 0:
-		return type != "tool" and type != "container"
+		return source == "inventory" and type == "tool"
+
+	# Case 4: Target is bench input slot
+	if bench_input_slot_index >= 0:
+		return source == "inventory" and type != "tool" and type != "container"
+
 	return false
 
 
 func _drop_data(_at_position: Vector2, data: Variant) -> void:
 	if not _can_drop_data(_at_position, data):
 		return
-	var inv_idx: int = int(data.get("slot_index", -1))
-	if inv_idx < 0:
+	var source: String = data.get("source", "")
+
+	# Drop onto inventory slot
+	if slot_index >= 0:
+		if source == "container":
+			var cont_idx: int = int(data.get("container_slot_index", -1))
+			if cont_idx >= 0:
+				InventoryManager.drop_container_item_to_inventory_slot(slot_index, cont_idx)
+		elif source == "bench_input":
+			var bench_idx: int = int(data.get("bench_input_slot_index", -1))
+			if bench_idx >= 0:
+				CraftingSystem.drop_bench_input_to_inventory_slot(slot_index, bench_idx)
+		elif source == "bench_tool":
+			CraftingSystem.drop_bench_tool_to_inventory_slot(slot_index)
+		elif source == "inventory":
+			var from_inv: int = int(data.get("slot_index", -1))
+			if from_inv >= 0 and from_inv != slot_index:
+				# Swap or stack items between inventory slots
+				var src_item: Variant = InventoryManager.slots[from_inv]
+				var dst_item: Variant = InventoryManager.slots[slot_index]
+				if src_item != null:
+					if dst_item == null:
+						InventoryManager.slots[slot_index] = src_item
+						InventoryManager.slots[from_inv] = null
+					elif InventoryManager.can_items_stack(dst_item, src_item):
+						var max_stack := InventoryManager.get_max_stack(src_item)
+						var to_add := mini(max_stack - int(dst_item["qty"]), int(src_item["qty"]))
+						dst_item["qty"] = int(dst_item["qty"]) + to_add
+						src_item["qty"] = int(src_item["qty"]) - to_add
+						if int(src_item["qty"]) <= 0:
+							InventoryManager.slots[from_inv] = null
+					else:
+						InventoryManager.slots[slot_index] = src_item
+						InventoryManager.slots[from_inv] = dst_item
+					InventoryManager.inventory_changed.emit()
 		return
 
+	# Drop onto container slot
+	if container_slot_index >= 0:
+		var inv_idx: int = int(data.get("slot_index", -1))
+		if inv_idx >= 0:
+			InventoryManager.drop_into_container_slot(container_slot_index, inv_idx)
+		return
+
+	# Drop onto bench tool slot
 	if is_bench_tool_slot:
-		CraftingSystem.drop_item_to_tool_slot(inv_idx)
-	elif bench_input_slot_index >= 0:
-		CraftingSystem.drop_item_to_input_slot(bench_input_slot_index, inv_idx)
+		var inv_idx: int = int(data.get("slot_index", -1))
+		if inv_idx >= 0:
+			CraftingSystem.drop_item_to_tool_slot(inv_idx)
+		return
+
+	# Drop onto bench input slot
+	if bench_input_slot_index >= 0:
+		var inv_idx: int = int(data.get("slot_index", -1))
+		if inv_idx >= 0:
+			CraftingSystem.drop_item_to_input_slot(bench_input_slot_index, inv_idx)
+		return
 
 
 
@@ -158,7 +227,19 @@ func set_item(item: Variant) -> void:
 
 
 func _get_drag_data(_at_position: Vector2) -> Variant:
-	if current_item == null or slot_index < 0:
+	if current_item == null:
+		return null
+
+	var source_type := ""
+	if slot_index >= 0:
+		source_type = "inventory"
+	elif container_slot_index >= 0:
+		source_type = "container"
+	elif bench_input_slot_index >= 0:
+		source_type = "bench_input"
+	elif is_bench_tool_slot:
+		source_type = "bench_tool"
+	else:
 		return null
 
 	var preview := Control.new()
@@ -183,7 +264,6 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 		tex_rect.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 		bg.add_child(tex_rect)
 	else:
-
 		var lbl := Label.new()
 		lbl.text = def.get("glyph", "?")
 		lbl.set_anchors_preset(Control.PRESET_FULL_RECT)
@@ -194,8 +274,10 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 
 	set_drag_preview(preview)
 	return {
-		"source": "inventory",
+		"source": source_type,
 		"slot_index": slot_index,
+		"container_slot_index": container_slot_index,
+		"bench_input_slot_index": bench_input_slot_index,
 		"item": current_item
 	}
 
